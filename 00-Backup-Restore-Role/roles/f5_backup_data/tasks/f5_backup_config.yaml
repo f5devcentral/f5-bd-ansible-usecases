@@ -1,0 +1,7 @@
+---
+- name: Download a new UCS
+  bigip_ucs_fetch:
+    src: Use-Case-00-Backup.ucs
+    dest: "{{F5_UCS_File}}" 
+    provider: "{{provider}}"
+  delegate_to: localhost

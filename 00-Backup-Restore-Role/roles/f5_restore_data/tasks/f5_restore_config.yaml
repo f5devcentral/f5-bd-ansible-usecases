@@ -1,0 +1,10 @@
+---
+#Ignore set due to Bug #1666 https://github.com/F5Networks/f5-ansible/issues/1666 
+- name: Restore UCS From Backup
+  bigip_ucs:
+    ucs: "{{F5_UCS_File}}"
+    state: installed
+    no_license: yes
+    provider: "{{provider}}"
+  delegate_to: localhost
+  ignore_errors: yes

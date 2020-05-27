@@ -1,0 +1,57 @@
+- name: install yum-utils
+  yum: 
+    name: yum-utils
+    state: present
+
+- name: install device-mapper-persistent-data
+  yum:
+    name: device-mapper-persistent-data
+    state: present
+
+- name: install lvm2
+  yum:
+    name: lvm2
+    state: present
+
+
+- name: Add Docker GPG key.
+  rpm_key:
+    key: https://download.docker.com/linux/centos/gpg
+    state: present
+
+- name: Add Docker repository.
+  get_url:
+    url: "https://download.docker.com/linux/centos/docker-ce.repo"
+    dest: '/etc/yum.repos.d/docker-ce.repo'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: install containerd.io
+  yum:
+    name: https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
+    state: present
+
+- name: install docker-ce
+  yum:
+    name: docker-ce
+    state: present
+
+- name: install docker-ce-cli
+  yum:
+    name: docker-ce-cli
+    state: present
+
+- name: install python3
+  yum:
+    name: python3
+    state: present
+
+# Install (Docker) python package.
+- pip:
+    name: docker
+
+- name: start docker-ce
+  service:
+    name: docker
+    state: started

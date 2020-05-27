@@ -1,0 +1,7 @@
+---
+
+#Provision BIGIP-ASM
+  - name: Provision ASM
+    bigip_provision:
+      provider: "{{provider}}"
+      module: asm
