@@ -1,7 +1,7 @@
 ---
 - name: Download a new UCS
   bigip_ucs_fetch:
-    src: "{{Use-Case-Name}}"
-    dest: "{{F5_UCS_File}}" 
+    src: "{{File-Name}}"
+    dest: "{{Local-Folder-Location}}{{File-Name}}.ucs" 
     provider: "{{provider}}"
   delegate_to: localhost
