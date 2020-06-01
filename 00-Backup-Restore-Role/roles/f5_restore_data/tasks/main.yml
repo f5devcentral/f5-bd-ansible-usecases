@@ -20,7 +20,7 @@
      - restore
 
  - debug:
-     msg: "Restore Completed, Ignore JSON Error.  Reported bug at https://github.com/F5Networks/f5-ansible/issues/1666"
+     msg: "Restore Completed, Ignore Above Error.  Reported bug at https://github.com/F5Networks/f5-ansible/issues/1666"
    when: backup_file.stat.exists == true
    tags:
      - restore
