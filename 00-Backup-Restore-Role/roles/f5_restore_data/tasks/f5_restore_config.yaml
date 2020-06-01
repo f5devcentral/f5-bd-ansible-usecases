@@ -1,4 +1,9 @@
 ---
+
+- stat:
+    path: "{{F5_UCS_File}}"
+  register: result
+
 #Ignore set due to Bug #1666 https://github.com/F5Networks/f5-ansible/issues/1666 
 - name: Restore UCS From Backup
   bigip_ucs:
@@ -8,3 +13,4 @@
     provider: "{{provider}}"
   delegate_to: localhost
   ignore_errors: yes
+  when: result.stat.exists == true
