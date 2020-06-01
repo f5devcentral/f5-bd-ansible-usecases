@@ -1,5 +1,5 @@
 ---
 # Modify based on deployment
 F5_Admin_Port: "8443"
-Local-Folder-Location: "/tmp/"
-File-Name: "Use-Case-00-Backup.ucs"
+Local_Folder_Location: "/tmp/"
+File_Name: "Use-Case-00-Backup.ucs"
