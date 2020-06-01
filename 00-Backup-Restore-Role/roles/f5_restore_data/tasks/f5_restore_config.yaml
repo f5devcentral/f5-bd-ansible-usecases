@@ -1,18 +1,11 @@
 ---
 
-- stat:
-    path: "{{Local_Folder_Location}}{{File_Name}}"
-  register: result
-
-#Ignore set due to Bug #1666 https://github.com/F5Networks/f5-ansible/issues/1666 
+#Ignore set due to Bug #1666 https://github.com/F5Networks/f5-ansible/issues/1666
 - name: Restore UCS From Backup
   bigip_ucs:
-    ucs: "{{Local_Folder_Location}}{{File_Name}}"
+    ucs: "{{local_folder_location}}/UseCase-00-backup.ucs"
     state: installed
     no_license: yes
     provider: "{{provider}}"
   delegate_to: localhost
   ignore_errors: yes
-  when: result.stat.exists == true
-
-
