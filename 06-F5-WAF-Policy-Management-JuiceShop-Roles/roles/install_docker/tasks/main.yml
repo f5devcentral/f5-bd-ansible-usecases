@@ -1,9 +1,3 @@
-- name: kill boinc
-  service:
-    name: boinc-client
-    state: stopped
-    enabled: no
-
 - name: install yum-utils
   yum: 
     name: yum-utils

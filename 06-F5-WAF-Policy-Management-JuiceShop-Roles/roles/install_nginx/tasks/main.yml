@@ -1,6 +1,7 @@
 - name: install epel-release
   yum:
-    name: epel-release
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+    disable_gpg_check: yes
     state: present
 
 - name: Add NGINX GPG key
