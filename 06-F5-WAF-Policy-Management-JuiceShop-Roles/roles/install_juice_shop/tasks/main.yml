@@ -3,7 +3,6 @@
     name:  bkimminich/juice-shop:latest
     source: pull
 
-
 - name: start juicebox container
   docker_container:
     name: juice-shop-app

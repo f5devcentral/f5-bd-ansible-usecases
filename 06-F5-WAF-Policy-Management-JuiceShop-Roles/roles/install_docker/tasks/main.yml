@@ -13,13 +13,12 @@
     name: lvm2
     state: present
 
-
-- name: Add Docker GPG key.
+- name: Add Docker GPG key
   rpm_key:
     key: https://download.docker.com/linux/centos/gpg
     state: present
 
-- name: Add Docker repository.
+- name: Add Docker repository
   get_url:
     url: "https://download.docker.com/linux/centos/docker-ce.repo"
     dest: '/etc/yum.repos.d/docker-ce.repo'
