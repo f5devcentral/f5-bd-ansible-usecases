@@ -13,6 +13,11 @@
     name: lvm2
     state: present
 
+- name: install iptables
+  yum:
+    name: iptables
+    state: present
+
 - name: Add Docker GPG key
   rpm_key:
     key: https://download.docker.com/linux/centos/gpg
