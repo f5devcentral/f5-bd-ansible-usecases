@@ -2,7 +2,7 @@
 
 #Ignore set due to Bug #1666 https://github.com/F5Networks/f5-ansible/issues/1666
 - name: Restore UCS From Backup
-  bigip_ucs:
+  f5networks.f5_modules.bigip_ucs:
     ucs: "{{local_folder_location}}/UseCase-00-backup.ucs"
     state: installed
     no_license: yes

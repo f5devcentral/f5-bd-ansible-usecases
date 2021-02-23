@@ -17,7 +17,7 @@
 
 #Create Pool and Virtual Server for Use Case
   - name: Create Pool with Members
-    bigip_pool:
+    f5networks.f5_modules.bigip_pool:
       provider: "{{provider}}"
       state: present
       name: "{{ F5_VIP_Name }}_pool"
@@ -26,7 +26,7 @@
         - http
 
   - name: Add Pool Members
-    bigip_pool_member:
+    f5networks.f5_modules.bigip_pool_member:
       provider: "{{provider}}"
       state: present
       pool: "{{ F5_VIP_Name }}_pool"
@@ -36,7 +36,7 @@
     loop: "{{ groups['web'] }}"
 
   - name: Create a HTTPS Virtual Server
-    bigip_virtual_server:
+    f5networks.f5_modules.bigip_virtual_server:
       provider: "{{provider}}"
       state: present
       description: "HTTPS Virtual Server"
@@ -55,19 +55,19 @@
 
 #SSL Upload and Modification of VIP to use New Certificate
   - name: SSL cert upload
-    bigip_ssl_certificate:
+    f5networks.f5_modules.bigip_ssl_certificate:
       provider: "{{provider}}"
       name: "{{F5_VIP_Name}}_Cert"
       content: "{{ lookup('file', SSL_Cert) }}"
 
   - name: SSL key upload
-    bigip_ssl_key:
+    f5networks.f5_modules.bigip_ssl_key:
       provider: "{{provider}}"
       name: "{{F5_VIP_Name}}_Key"
       content: "{{ lookup('file', SSL_Key) }}"
 
   - name: Create a client SSL profile with a cert/key/chain setting
-    bigip_profile_client_ssl:
+    f5networks.f5_modules.bigip_profile_client_ssl:
       provider: "{{provider}}"
       state: present
       name: "{{F5_VIP_Name}}_ClientSSL_profile"
@@ -76,7 +76,7 @@
          key: "{{F5_VIP_Name}}_Key"
 
   - name: UPDATE A VIRTUAL SERVER
-    bigip_virtual_server:
+    f5networks.f5_modules.bigip_virtual_server:
       provider: "{{provider}}"
       name: "{{ F5_VIP_Name }}_https_vip"
       port: "8081"

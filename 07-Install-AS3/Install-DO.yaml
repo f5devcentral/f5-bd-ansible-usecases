@@ -4,7 +4,7 @@
   gather_facts: no
 
   vars:
-    as3_uri: "https://github.com/F5Networks/f5-appsvcs-extension/releases"
+    as3_uri: "https://github.com/F5Networks/f5-declarative-onboarding/releases"
   
   tasks:
 
@@ -18,7 +18,7 @@
   - set_fact:
      as3_release: "{{as3_output.stdout_lines[0]}}"
 
-  - name: Get latest AS3 RPM version
+  - name: Get latest DO RPM version
     action: shell wget -O - {{as3_uri}} | grep -E rpm | head -1 | cut -d "/" -f 6
     register: as3_output
 
@@ -28,7 +28,7 @@
   - set_fact:
      as3_release_tag: "{{as3_output.stdout_lines[0]}}"
 
-  - name: Grab AS3 RPM from github
+  - name: Grab DO RPM from github
     get_url:
      url: "{{as3_uri}}/download/{{as3_release_tag}}/{{as3_release}}?raw=true"
      dest: "~/"

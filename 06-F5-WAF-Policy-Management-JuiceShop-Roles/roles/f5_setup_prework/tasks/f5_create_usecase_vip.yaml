@@ -2,7 +2,7 @@
 
 #Create Pool and Virtual Server for Use Case
   - name: Create Pool with Members
-    bigip_pool:
+    f5networks.f5_modules.bigip_pool:
       provider: "{{provider}}"
       state: present
       name: "{{ F5_VIP_Name }}_pool"
@@ -11,7 +11,7 @@
         - http
 
   - name: Add Pool Members
-    bigip_pool_member:
+    f5networks.f5_modules.bigip_pool_member:
       provider: "{{provider}}"
       state: present
       pool: "{{ F5_VIP_Name }}_pool"

@@ -15,7 +15,7 @@
       validate_certs: "no"
 
   - name: Create Pool with Members
-    bigip_pool:
+    f5networks.f5_modules.bigip_pool:
       provider: "{{provider}}"
       state: present
       name: "{{ F5_VIP_Name }}_pool"
@@ -24,7 +24,7 @@
         - http
 
   - name: Create a HTTPS Virtual Server
-    bigip_virtual_server:
+    f5networks.f5_modules.bigip_virtual_server:
       provider: "{{provider}}"
       state: present
       description: "HTTPS Virtual Server"
@@ -41,7 +41,7 @@
     when: F5_VIP_Name is defined
 
   - name: Add Pool Members
-    bigip_pool_member:
+    f5networks.f5_modules.bigip_pool_member:
       provider: "{{provider}}"
       state: present
       pool: "{{ F5_VIP_Name }}_pool"
@@ -52,14 +52,14 @@
     loop: "{{ groups['web'] }}"
 
   - name: Query BIG-IP facts
-    bigip_device_facts:
+    f5networks.f5_modules.bigip_device_info:
       provider: "{{provider}}"
       gather_subset:
        - ltm-pools
     register: bigip_facts
 
   - name: Change ALL pool members State to {{F5_Pool_Node_State}}
-    bigip_pool_member:
+    f5networks.f5_modules.bigip_pool_member:
       provider: "{{provider}}"
       state: "{{F5_Pool_Node_State|lower}}"
       name: "{{item.split(':')[0]}}"
@@ -72,7 +72,7 @@
     when: '"all" in F5_Pool_Members|lower and F5_Pool_Node_State is defined'
 
   - name: Change Specific Pool member(s) State to {{F5_Pool_Node_State}}
-    bigip_pool_member:
+    f5networks.f5_modules.bigip_pool_member:
       provider: "{{provider}}"
       state: "{{F5_Pool_Node_State|lower}}"
       name: "{{item.split(':')[0]}}"

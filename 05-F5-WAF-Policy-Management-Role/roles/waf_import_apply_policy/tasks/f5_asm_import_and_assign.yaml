@@ -2,14 +2,14 @@
 
 #Re-Deploy ASM policy
   - name: Create an LTM policy
-    bigip_policy:
+    f5networks.f5_modules.bigip_policy:
       provider: "{{provider}}"
       name: "{{ ASM_Policy_Name }}"
       state: present
     when: Blocked_URLs is defined or Blocked_IPs is defined
 
   - name: Import ASM policy
-    bigip_asm_policy_import:
+    f5networks.f5_modules.bigip_asm_policy_import:
       provider: "{{provider}}"
       name: "{{ ASM_Policy_Name }}"
       source: "{{ ASM_Policy_File }}"
@@ -17,7 +17,7 @@
     when: Blocked_URLs is defined or Blocked_IPs is defined
 
   - name: Replace a forward action with an ASM action
-    bigip_policy_rule:
+    f5networks.f5_modules.bigip_policy_rule:
       provider: "{{provider}}"
       policy: "{{ ASM_Policy_Name }}"
       name: rule1
@@ -27,7 +27,7 @@
     when: Blocked_URLs is defined or Blocked_IPs is defined
 
   - name: Deploy Draft ASM policy
-    bigip_policy:
+    f5networks.f5_modules.bigip_policy:
       provider: "{{provider}}"
       name: "{{ ASM_Policy_Name }}"
       state: present
@@ -37,7 +37,7 @@
 
 #Assign ASM Policy to VIP
   - name: Update the HTTPS Virtual Server
-    bigip_virtual_server:
+    f5networks.f5_modules.bigip_virtual_server:
       provider: "{{provider}}"
       state: present
       description: "HTTPS Virtual Server"
@@ -58,13 +58,13 @@
 
 #Apply Draft ASM policy
   - name: Activate ASM Policy
-    bigip_asm_policy_manage:
+    f5networks.f5_modules.bigip_asm_policy_manage:
       provider: "{{provider}}"
       name: "{{ ASM_Policy_Name }}"
       active: yes
 
 #Publish ASM Policy via TMSH
   - name: Publish ASM Policy via TMSH
-    bigip_command:
+    f5networks.f5_modules.bigip_command:
       commands: "publish asm policy {{ASM_Policy_Name}}"
       provider: "{{provider}}"
