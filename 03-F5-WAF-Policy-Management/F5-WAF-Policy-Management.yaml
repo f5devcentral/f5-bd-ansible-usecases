@@ -60,7 +60,7 @@
 #Output Data to File due to BUG 1390
   - copy:
       content: "{{ ASM_Policy.inline_policy }}"
-      dest: "{{ ASM_Policy_File }}"
+      dest: "{{ ASM_Policy_File }}.tmp"
     when: Blocked_URLs is defined or Blocked_IPs is defined
 
 #Validate Existing IP Addresses
