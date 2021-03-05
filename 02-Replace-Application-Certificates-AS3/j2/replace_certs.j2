@@ -24,7 +24,7 @@
 				},
 				"{{ F5_VIP_Name }}_pool": {
 					"class": "Pool",
-					"loadBalancingMode": "predictive-node",
+					"loadBalancingMode": "least-connections-member",
 					"monitors": [
 						"http"
 					],

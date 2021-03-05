@@ -1,5 +1,5 @@
 ---
-- name: USECASE2-AS3
+- name: USECASE3-AS3
   hosts: lb
   connection: local
   gather_facts: false
@@ -22,8 +22,7 @@
       git config --global user.email "m.mabis@f5.com"
       git config --global user.name "{{git_username}}"
   
-  
-  - name: Get latest AS3 RPM version
+  - name: Get latest DO RPM name
     action: shell wget -O - {{do_uri}} | grep -E rpm | head -1 | cut -d "/" -f 7 | cut -d "=" -f 1 |  cut -d "\"" -f 1
     register: do_output
 
@@ -81,7 +80,7 @@
     delegate_to: localhost
     register: installed_status
 
-  - name: PUSH DO - Install ASM if not Installed
+  - name: Install ASM - Push via DO (if not Installed)
     uri:
       url: "https://{{ ansible_host }}:8443/mgmt/shared/declarative-onboarding/declare"
       method: POST
@@ -101,21 +100,77 @@
       minutes: 2
     when: installed_status.json.level != "nominal"
 
-  - name: Creates directory
+  - name: Check if Repo Exists
+    ansible.builtin.uri:
+      url: https://api.bitbucket.org/2.0/repositories/vdi-tech-guy/
+      method: GET
+      user: "{{git_username}}"
+      password: "{{git_password}}"
+      force_basic_auth: yes
+      status_code: 200
+      body_format: json
+    delegate_to: localhost
+    register: repo_info
+
+  - name: check if repo exists
+    set_fact:
+      student_id: "{{ item }}"
+    with_items: "{{repo_info.json['values']}}"
+    when: item.name == repo_name
+
+  - name: Removes directory if Exists
     file:
       path: ~/asm-xml-files
-      state: directory
+      state: absent
+
+  - name: Removes directory if Exists
+    file:
+      path: ~/asm-xml-files-student
+      state: absent
 
   - name: Git checkout
     ansible.builtin.git:
       repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@bitbucket.org/vdi-tech-guy/f5-asm-policies.git"
       dest: ~/asm-xml-files
+    when: student_id is undefined
 
   - name: Copy Master Template to TMP
     ansible.builtin.copy:
       src: "{{ASM_Master_File}}"
       dest: "{{ ASM_Policy_File }}"
-      
+    when: student_id is undefined
+
+  - name: Git checkout
+    ansible.builtin.git:
+      repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@bitbucket.org/vdi-tech-guy/{{repo_name}}"
+      dest: ~/asm-xml-files
+    ignore_errors: true
+    when: student_id is defined
+
+  - name: Find Latest File
+    action: shell ls ~/asm-xml-files -Artf | tail -n 1
+    register: latest_file_output
+    when: student_id is defined
+
+  - debug:
+      var: latest_file_output.stdout
+    when: student_id is defined
+
+  - name: Copy Master Template to TMP
+    ansible.builtin.copy:
+      src: "~/asm-xml-files/{{latest_file_output.stdout}}"
+      dest: "{{ ASM_Policy_File }}"
+    when: student_id is defined
+
+  - name: Get Checksum of Master file
+    stat:
+      path : "{{ ASM_Policy_File }}"
+    register: first_file
+  
+  - name: Master Template SHA1
+    set_fact:
+      file1_sha: "{{ first_file.stat.checksum }}"  
+
 #Validate Existing IP Addresses
   - name: Validate Existing IP Addresses
     shell: grep "<ip_address>{{ item }}" {{ ASM_Policy_File }}
@@ -182,6 +237,20 @@
         - "<policy_builder_tracking>enabled</policy_builder_tracking>"
     when: Blocked_URLs is defined
 
+  - name: Get Checksum of Modified file
+    stat:
+      path : "{{ ASM_Policy_File }}"
+    register: second_file
+
+  - name: Master Template SHA1
+    set_fact:
+      file2_sha: "{{ second_file.stat.checksum }}"
+
+  - name: Compilation Changed
+    set_fact:
+      sha_matched: = "{{file2_sha and file1_sha}}"
+    when:  file2_sha != file1_sha
+   
   - name: Check if Repo Exists
     ansible.builtin.uri:
       url: https://api.bitbucket.org/2.0/repositories/vdi-tech-guy/
@@ -193,15 +262,13 @@
       body_format: json
     delegate_to: localhost
     register: repo_info
+    when: sha_matched is defined
 
   - name: check if repo exists
     set_fact:
       student_id: "{{ item }}"
     with_items: "{{repo_info.json['values']}}"
-    when: item.name == repo_name
-
-  - debug:
-      var: repo_name
+    when: sha_matched is defined and item.name == repo_name
 
   - name: Create a Bitbucket Repo
     ansible.builtin.uri:
@@ -214,19 +281,24 @@
       status_code: 200
       body_format: json
     delegate_to: localhost
-    when: student_id is undefined
+    when: sha_matched is defined and student_id is undefined
 
   - name: Git checkout
     ansible.builtin.git:
       repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@bitbucket.org/vdi-tech-guy/{{repo_name}}"
       dest: ~/asm-xml-files-student
     ignore_errors: true
-
+    when: sha_matched is defined
 
   - name: Copy Modified File to Git Repo
     ansible.builtin.copy:
       src: "{{ASM_Policy_File}}"
       dest: "~/asm-xml-files-student/{{ASM_Final_File_Name}}"
+    when: sha_matched is defined
+    register: file_name_output
+
+  - debug: 
+      var: file_name_output
 
   - name: Commit Changes to Git
     shell: |
@@ -235,6 +307,7 @@
       git commit -m "ASM File Update $(date +"%Y-%m-%d %H:%M:%S")"
       git push
       exit 0
+    when: sha_matched is defined
 
   - name: Ensure remote URL does not contain credentials
     git_config:
@@ -242,6 +315,7 @@
       value: "https://bitbucket.org/vdi-tech-guy/f5-asm-policies.git"
       scope: local
       repo: ~/asm-xml-files
+    when: sha_matched is defined
 
   - name: Ensure remote URL does not contain credentials
     git_config:
@@ -249,10 +323,11 @@
       value: "https://bitbucket.org/vdi-tech-guy/{{repo_name}}"
       scope: local
       repo: ~/asm-xml-files-student
-
+    when: sha_matched is defined
+  
   - debug:
-      msg: "https://bitbucket.org/vdi-tech-guy/{{repo_name}}/raw/master/{{ASM_Final_File_Name}}"
-
+      var: ASM_Final_File_Name
+     
   - name: PUSH AS3
     uri:
       url: "https://{{ ansible_host }}:8443/mgmt/shared/appsvcs/declare"
@@ -266,4 +341,19 @@
       password: "{{ ansible_ssh_pass }}"
       validate_certs: false
     delegate_to: localhost
+    when: sha_matched is defined
 
+  - name: PUSH AS3 ALT
+    uri:
+      url: "https://{{ ansible_host }}:8443/mgmt/shared/appsvcs/declare"
+      method: POST
+      body: "{{ lookup('template','j2/configure_as3_alt.j2', split_lines=False) }}"
+      status_code: 200
+      timeout: 300
+      body_format: json
+      force_basic_auth: true
+      user: "{{ ansible_user }}"
+      password: "{{ ansible_ssh_pass }}"
+      validate_certs: false
+    delegate_to: localhost
+    when: sha_matched is not defined
