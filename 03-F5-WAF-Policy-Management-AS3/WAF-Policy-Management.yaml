@@ -7,13 +7,6 @@
   vars_files:
     - vars/f5_vars.yml
   vars_prompt:
-    - name: "git_username"
-      prompt: "Enter your Git Username"
-      private: no
-    - name: "git_password"
-      prompt: "Enter your Git Password"
-      private: yes
-
 
   tasks:
 
@@ -23,8 +16,8 @@
 
   - name: Commit Changes to Git
     shell: |
-      git config --global user.email "m.mabis@f5.com"
-      git config --global user.name "{{git_username}}"
+      git config --global user.email "{{ git_email }}"
+      git config --global user.name "{{ git_username }}"
   
   - name: Get latest DO RPM name
     action: shell wget -O - {{do_uri}} | grep -E rpm | head -1 | cut -d "/" -f 7 | cut -d "=" -f 1 |  cut -d "\"" -f 1
@@ -52,7 +45,7 @@
       server: "{{private_ip}}"
       user: "{{ansible_user}}"
       password: "{{ansible_ssh_pass}}"
-      server_port: 8443
+      server_port: "{{F5_Admin_Port}}"
       validate_certs: no
 
   - name: Grab the DO version from the home directory
@@ -75,7 +68,7 @@
 
   - name: GET ASM - Module Install Status
     uri:
-      url: "https://{{ ansible_host }}:8443/mgmt/tm/sys/provision/asm"
+      url: "https://{{ ansible_host }}:{{F5_Admin_Port}}/mgmt/tm/sys/provision/asm"
       method: GET
       status_code: 200
       timeout: 300
@@ -88,7 +81,7 @@
 
   - name: Install ASM - Push via DO (if not Installed)
     uri:
-      url: "https://{{ ansible_host }}:8443/mgmt/shared/declarative-onboarding/declare"
+      url: "https://{{ ansible_host }}:{{F5_Admin_Port}}/mgmt/shared/declarative-onboarding/declare"
       method: POST
       body: "{{ lookup('template','j2/provision.j2', split_lines=False) }}"
       status_code: 202
@@ -104,7 +97,7 @@
     
   - name: Wait for DO Task to complete
     uri:
-      url: "https://{{ ansible_host }}:8443/mgmt/shared/declarative-onboarding/task/{{ do_result.json.id }}"
+      url: "https://{{ ansible_host }}:{{F5_Admin_Port}}/mgmt/shared/declarative-onboarding/task/{{ do_result.json.id }}"
       method: GET
       return_content: true
       status_code: 200
@@ -350,7 +343,7 @@
      
   - name: PUSH AS3
     uri:
-      url: "https://{{ ansible_host }}:8443/mgmt/shared/appsvcs/declare"
+      url: "https://{{ ansible_host }}:{{F5_Admin_Port}}/mgmt/shared/appsvcs/declare"
       method: POST
       body: "{{ lookup('template','j2/configure_as3.j2', split_lines=False) }}"
       status_code: 200, 202
@@ -365,7 +358,7 @@
 
   - name: PUSH AS3 ALT
     uri:
-      url: "https://{{ ansible_host }}:8443/mgmt/shared/appsvcs/declare"
+      url: "https://{{ ansible_host }}:{{F5_Admin_Port}}/mgmt/shared/appsvcs/declare"
       method: POST
       body: "{{ lookup('template','j2/configure_as3_alt.j2', split_lines=False) }}"
       status_code: 200, 202
