@@ -20,11 +20,13 @@
 					],
 					"pool": "{{ F5_VIP_Name }}_pool",
 					"redirect80": false,
-					"serverTLS": "{{ F5_VIP_Name }}_cert"
+					"serverTLS": "{{ F5_VIP_Name }}_cert",
+          "persistenceMethods": []
 				},
 				"{{ F5_VIP_Name }}_pool": {
 					"class": "Pool",
-					"loadBalancingMode": "least-connections-member",
+	        "minimumMembersActive": 0,
+          "minimumMonitors": "all",
 					"monitors": [
 						"http"
 					],
