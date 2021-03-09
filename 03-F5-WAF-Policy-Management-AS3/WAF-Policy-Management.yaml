@@ -104,7 +104,7 @@
     
   - name: Wait for DO Task to complete
     uri:
-      url: "https://{{ ansible_host }}:8443/mgmt/shared/appsvcs/task/{{ do_result.json.id }}"
+      url: "https://{{ ansible_host }}:8443/mgmt/shared/declarative-onboarding/task/{{ do_result.json.id }}"
       method: GET
       return_content: true
       status_code: 200
