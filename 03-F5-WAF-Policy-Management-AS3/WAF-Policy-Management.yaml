@@ -114,8 +114,8 @@
       validate_certs: false
     register: atc_DO_status
     until: atc_DO_status is success
-    retries: 15
-    delay: 30
+    retries: 30
+    delay: 15
     delegate_to: localhost
     when: installed_status.json.level != "nominal"
 

@@ -15,12 +15,6 @@ Blocked_IPs:
 - 10.105.192.199
 - 172.16.192.199
 - 192.168.30.199
-- 192.172.1.1
-- 192.192.192.1
-- 199.199.199.1
-- 194.194.149.1
-- 195.159.159.1
-- 192.192.192.111
 pool_members: "{{ groups['web'] }}"
 repo_name: "{{lookup('env', 'USER')}}-repo"
 do_uri: "https://github.com/F5Networks/f5-declarative-onboarding/releases"
