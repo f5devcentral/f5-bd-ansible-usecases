@@ -17,6 +17,10 @@
 
   tasks:
 
+#hardcode timestamp into variable
+  - set_fact:
+      ASM_Final_File_Name: "{{F5_VIP_Name}}-ASMPolicy-{{ lookup('pipe','date +%Y-%m-%d-%H-%M-%S') }}.xml"
+
   - name: Commit Changes to Git
     shell: |
       git config --global user.email "m.mabis@f5.com"
@@ -62,10 +66,12 @@
     bigip_iapplx_package:
      package: "~/{{do_rpm}}"
      provider: "{{provider}}"
+    register: install_do
 
   - name: Pause for Install to complete
     pause:
       minutes: 1
+    when: install_do.changed
 
   - name: GET ASM - Module Install Status
     uri:

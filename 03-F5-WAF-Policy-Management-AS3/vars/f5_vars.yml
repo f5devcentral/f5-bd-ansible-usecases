@@ -6,7 +6,6 @@ F5_VIP_Name: Use-Case-3-VIP
 
 ASM_Master_File: "~/asm-xml-files/Master_Template_v16.xml"
 ASM_Policy_File: "/tmp/Modified_Master_Template_v16.xml"
-ASM_Final_File_Name: "{{F5_VIP_Name}}-ASMPolicy-{{ lookup('pipe','date +%Y-%m-%d-%H-%M-%S') }}.xml"
 Blocked_URLs:
 - /blocked.html
 - /hacked.html
