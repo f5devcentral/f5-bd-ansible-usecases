@@ -9,27 +9,27 @@
   tasks:
 
   - name: Get latest AS3 RPM version
-    action: shell wget -O - {{as3_uri}} | grep -E rpm | head -1 | cut -d "/" -f 7 | cut -d "=" -f 1 |  cut -d "\"" -f 1
+    ansible.builtin.shell: wget -O - {{as3_uri}} | grep -E rpm | head -1 | cut -d "/" -f 7 | cut -d "=" -f 1 |  cut -d "\"" -f 1
     register: as3_output
 
   - debug:
      var: as3_output.stdout_lines[0]
 
-  - set_fact:
+  - ansible.builtin.set_fact:
      as3_release: "{{as3_output.stdout_lines[0]}}"
 
   - name: Get latest AS3 RPM version
-    action: shell wget -O - {{as3_uri}} | grep -E rpm | head -1 | cut -d "/" -f 6
+    ansible.builtin.shell: wget -O - {{as3_uri}} | grep -E rpm | head -1 | cut -d "/" -f 6
     register: as3_output
 
   - debug:
      var: as3_output.stdout_lines[0]
 
-  - set_fact:
+  - ansible.builtin.set_fact:
      as3_release_tag: "{{as3_output.stdout_lines[0]}}"
 
   - name: Grab AS3 RPM from github
-    get_url:
+    ansible.builtin.get_url:
      url: "{{as3_uri}}/download/{{as3_release_tag}}/{{as3_release}}?raw=true"
      dest: "~/"
      validate_certs: false
@@ -41,7 +41,7 @@
 
   tasks:
     - name: Set a fact named 'provider' with BIG-IP login information
-      set_fact:
+      ansible.builtin.set_fact:
        provider:
         server: "{{private_ip}}"
         user: "{{ansible_user}}"
@@ -50,13 +50,13 @@
         validate_certs: no
 
     - name: Grab the AS3 version from the home directory
-      shell: ls -Art ~/*.rpm | tail -n 1 | rev | cut -d/ -f 1 | rev
+      ansible.builtin.shell: ls -Art ~/*.rpm | tail -n 1 | rev | cut -d/ -f 1 | rev
       register: ls_output
 
-    - set_fact:
+    - ansible.builtin.set_fact:
        as3_rpm: "{{ls_output.stdout}}"
 
     - name: Install AS3
-      f5networks.f5_modules.bigip_iapplx_package:
+      f5networks.f5_modules.bigip_lx_package:
        package: "~/{{as3_rpm}}"
        provider: "{{provider}}"

@@ -6,7 +6,7 @@
 
   tasks:
     - name: PUSH AS3
-      uri:
+      ansible.builtin.uri:
         url: "https://{{ ansible_host }}:8443/mgmt/shared/appsvcs/declare/AnsibleWorkshop"
         method: DELETE
         status_code: 200

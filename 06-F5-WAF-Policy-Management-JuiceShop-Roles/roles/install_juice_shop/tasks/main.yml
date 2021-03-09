@@ -1,10 +1,10 @@
 - name: pull juicebox image
-  docker_image:
+  community.docker.docker_image:
     name:  bkimminich/juice-shop:latest
     source: pull
 
 - name: start juicebox container
-  docker_container:
+  community.docker.docker_container:
     name: juice-shop-app
     image: bkimminich/juice-shop:latest
     state: started

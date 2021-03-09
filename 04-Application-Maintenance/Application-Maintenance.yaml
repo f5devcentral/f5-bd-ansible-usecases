@@ -6,7 +6,7 @@
 
   tasks:
   - name: Setup provider
-    set_fact:
+    ansible.builtin.set_fact:
      provider:
       server: "{{private_ip}}"
       user: "{{ansible_user}}"

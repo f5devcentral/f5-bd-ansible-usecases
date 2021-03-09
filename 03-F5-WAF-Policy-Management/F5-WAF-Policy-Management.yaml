@@ -6,7 +6,7 @@
 
   tasks:
   - name: Setup provider
-    set_fact:
+    ansible.builtin.set_fact:
      provider:
       server: "{{private_ip}}"
       user: "{{ansible_user}}"
@@ -58,14 +58,14 @@
     when: Blocked_URLs is defined or Blocked_IPs is defined
 
 #Output Data to File due to BUG 1390
-  - copy:
+  - ansible.builtin.copy:
       content: "{{ ASM_Policy.inline_policy }}"
-      dest: "{{ ASM_Policy_File }}.tmp"
+      dest: "{{ ASM_Policy_File }}"
     when: Blocked_URLs is defined or Blocked_IPs is defined
 
 #Validate Existing IP Addresses
   - name: Validate Existing IP Addresses
-    shell: grep "<ip_address>{{ item }}" {{ ASM_Policy_File }}
+    ansible.builtin.shell: grep "<ip_address>{{ item }}" {{ ASM_Policy_File }}
     register: Blocked_IP_Valid
     with_items: "{{ Blocked_IPs }}"
     ignore_errors: yes
@@ -73,7 +73,7 @@
 
 #Import Additional Disallowed IPs
   - name: Add Disallowed IPs
-    xml:
+    community.general.xml:
       path: "{{ ASM_Policy_File }}"
       pretty_print: yes
       input_type: xml
@@ -85,7 +85,7 @@
 
 #Validate Existing URL Addresses
   - name: Validate Existing URL Addresses
-    shell: grep 'name="{{ item }}"' {{ ASM_Policy_File }}
+    ansible.builtin.shell: grep 'name="{{ item }}"' {{ ASM_Policy_File }}
     register: Blocked_URLs_Valid
     with_items: "{{ Blocked_URLs }}"
     ignore_errors: yes
@@ -93,7 +93,7 @@
 
 #create Disallowed URLs Section if missing
   - name: Add Disallowed URLs
-    xml:
+    community.general.xml:
       path: "{{ ASM_Policy_File }}"
       input_type: xml
       pretty_print: yes
@@ -104,7 +104,7 @@
 
 #Import Additional Disallowed URLs
   - name: Add Disallowed URLs
-    xml:
+    community.general.xml:
       path: "{{ ASM_Policy_File }}"
       input_type: xml
       pretty_print: yes
@@ -117,7 +117,7 @@
 
 #Enable Illegal URL Blocking Violations
   - name: Illegal URL Blocking Violations Enablement
-    xml:
+    community.general.xml:
       path: "{{ ASM_Policy_File }}"
       input_type: xml
       pretty_print: yes

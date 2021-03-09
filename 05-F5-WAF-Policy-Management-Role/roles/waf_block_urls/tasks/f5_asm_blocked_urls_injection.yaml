@@ -2,7 +2,7 @@
 
 #Validate Existing URL Addresses
   - name: Validate Existing URL Addresses
-    shell: grep 'name="{{ item }}"' {{ ASM_Policy_File }}
+    ansible.builtin.shell: grep 'name="{{ item }}"' {{ ASM_Policy_File }}
     register: Blocked_URLs_Valid
     with_items: "{{ Blocked_URLs }}"
     ignore_errors: yes
@@ -11,7 +11,7 @@
 
 #create Disallowed URLs Section if missing
   - name: Add Disallowed URLs
-    xml:
+    community.general.xml:
       path: "{{ ASM_Policy_File }}"
       input_type: xml
       pretty_print: yes
@@ -22,7 +22,7 @@
 
 #Import Additional Disallowed URLs
   - name: Add Disallowed URLs
-    xml:
+    community.general.xml:
       path: "{{ ASM_Policy_File }}"
       input_type: xml
       pretty_print: yes
@@ -35,7 +35,7 @@
 
 #Enable Illegal URL Blocking Violations
   - name: Illegal URL Blocking Violations Enablement
-    xml:
+    community.general.xml:
       path: "{{ ASM_Policy_File }}"
       input_type: xml
       pretty_print: yes

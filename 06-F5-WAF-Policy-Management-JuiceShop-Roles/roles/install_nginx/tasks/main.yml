@@ -1,26 +1,26 @@
 - name: install epel-release
-  yum:
+  ansible.builtin.yum:
     name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
     disable_gpg_check: yes
     state: present
 
 - name: Add NGINX GPG key
-  rpm_key:
+  ansible.builtin.rpm_key:
     key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8"
     state: present
 
 - name: install nginx-proxy
-  yum:
+  ansible.builtin.yum:
     name: nginx
     state: present
 
 - name: copy nginx configuration
-  copy:
+  ansible.builtin.copy:
     src: "{{ role_path }}/files/nginx.conf"
     dest: /etc/nginx/nginx.conf
 
 - name: add nginx user
-  user:
+  ansible.builtin.user:
     name: nginx
     comment: Nginx web server
     create_home: no
@@ -29,13 +29,13 @@
     state: present
 
 - name: start nginx
-  service:
+  ansible.builtin.service:
     name: nginx
     state: started
     enabled: yes
 
 - name: Set httpd_can_network_connect flag on and keep it persistent across reboots
-  seboolean:
+  ansible.posix.seboolean:
     name: httpd_can_network_connect
     state: yes
     persistent: yes

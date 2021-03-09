@@ -13,7 +13,7 @@
 
 #Validate Existing IP Addresses
   - name: Validate Existing IP Addresses
-    shell: grep "<ip_address>{{ item }}" {{ ASM_Policy_File }}
+    ansible.builtin.shell: grep "<ip_address>{{ item }}" {{ ASM_Policy_File }}
     register: Blocked_IP_Valid
     with_items: "{{ Blocked_IPs }}"
     ignore_errors: yes
@@ -21,7 +21,7 @@
 
 #Import Additional Disallowed IPs
   - name: Add Disallowed IPs
-    xml:
+    community.general.xml:
       path: "{{ ASM_Policy_File }}"
       pretty_print: yes
       input_type: xml
