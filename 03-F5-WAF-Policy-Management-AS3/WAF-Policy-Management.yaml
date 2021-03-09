@@ -101,9 +101,15 @@
     delegate_to: localhost
     when: installed_status.json.level != "nominal"
 
+  - name: Wait for API to be Ready
+    bigip_wait:
+      timeout: 300
+      provider: "{{provider}}"
+    delegate_to: localhost
+
   - name: Pause for install of ASM to complete
     pause:
-      minutes: 2
+      minutes: 3
     when: installed_status.json.level != "nominal"
 
   - name: Check if Repo Exists
