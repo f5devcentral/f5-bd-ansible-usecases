@@ -16,7 +16,7 @@
 #        as3_app_body: "{{ lookup('template', 'j2/as3_template.j2', split_lines=False) }}"
 
     - name: PUSH AS3
-      uri:
+      ansible.builtin.uri:
         url: "https://{{ ansible_host }}:{{ F5_Admin_Port }}/mgmt/shared/appsvcs/declare"
         method: POST
         body: "{{ lookup('template','j2/https.j2', split_lines=False) }}"

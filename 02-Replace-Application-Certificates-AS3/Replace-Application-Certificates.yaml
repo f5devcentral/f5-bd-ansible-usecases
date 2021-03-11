@@ -15,10 +15,8 @@
 #      set_fact:
 #        as3_app_body: "{{ lookup('template', 'j2/as3_template.j2', split_lines=False) }}"
 
-    - debug:
-        msg: "{{ F5_VIP_Name }}"
     - name: PUSH AS3
-      uri:
+      ansible.builtin.uri:
         url: "https://{{ ansible_host }}:8443/mgmt/shared/appsvcs/declare"
         method: POST
         body: "{{ lookup('template','j2/replace_certs.j2', split_lines=False) }}"
