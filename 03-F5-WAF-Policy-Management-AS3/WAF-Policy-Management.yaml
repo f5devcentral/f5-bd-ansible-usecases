@@ -15,7 +15,7 @@
     register: credentials_bypass
 
   - ansible.builtin.include_vars:
-      path: ~/credentials.yml
+      file: ~/credentials.yml
     when: credentials_bypass.stat.exists
 
 #hardcode timestamp into variable
