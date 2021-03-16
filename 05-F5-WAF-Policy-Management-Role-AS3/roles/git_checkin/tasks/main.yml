@@ -40,7 +40,7 @@
      method: POST
      user: "{{git_username}}"
      password: "{{git_password}}"
-     body: "{{ lookup('template','j2/create_repo.j2', split_lines=False) }}"
+     body: "{{ lookup('template','create_repo.j2', split_lines=False) }}"
      force_basic_auth: yes
      status_code: 200
      body_format: json
