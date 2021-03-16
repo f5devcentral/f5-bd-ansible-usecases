@@ -29,7 +29,6 @@
     - docker-ce
     - docker-ce-cli
     - python3
-    - boinc-client
     state: present
 
 # Install (Docker) python package.
