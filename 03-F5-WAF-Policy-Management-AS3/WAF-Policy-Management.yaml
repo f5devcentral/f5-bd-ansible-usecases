@@ -353,7 +353,7 @@
     ansible.builtin.uri:
       url: "https://{{ ansible_host }}:{{F5_Admin_Port}}/mgmt/shared/appsvcs/declare"
       method: POST
-      body: "{{ lookup('template','configure_as3.j2', split_lines=False) }}"
+      body: "{{ lookup('template','j2/configure_as3.j2', split_lines=False) }}"
       status_code: 200, 202
       timeout: 300
       body_format: json
@@ -368,7 +368,7 @@
     ansible.builtin.uri:
       url: "https://{{ ansible_host }}:{{F5_Admin_Port}}/mgmt/shared/appsvcs/declare"
       method: POST
-      body: "{{ lookup('template','configure_as3_alt.j2', split_lines=False) }}"
+      body: "{{ lookup('template','j2/configure_as3_alt.j2', split_lines=False) }}"
       status_code: 200, 202
       timeout: 300
       body_format: json
