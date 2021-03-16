@@ -2,7 +2,7 @@
 # Modify based on deployment
 F5_VIP_Port: "8084"
 F5_Admin_Port: "8443"
-F5_VIP_Name: Use-Case-5-VIP
+F5_VIP_Name: Use-Cllsase-5-VIP
 
 ASM_Master_File: "~/asm-xml-files/Master_Template_v16.xml"
 ASM_Policy_File: "/tmp/Modified_Master_Template_v16.xml"

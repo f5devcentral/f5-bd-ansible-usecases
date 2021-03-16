@@ -10,6 +10,18 @@
      git config --global user.email "{{ git_email }}"
      git config --global user.name "{{ git_username }}"
 
+ - name: Check if Repo Exists
+   ansible.builtin.uri:
+     url: https://api.bitbucket.org/2.0/repositories/vdi-tech-guy/
+     method: GET
+     user: "{{git_username}}"
+     password: "{{git_password}}"
+     force_basic_auth: yes
+     status_code: 200
+     body_format: json
+   delegate_to: localhost
+   register: repo_info
+
  - name: check if repo exists
    ansible.builtin.set_fact:
      student_id: "{{ item }}"
