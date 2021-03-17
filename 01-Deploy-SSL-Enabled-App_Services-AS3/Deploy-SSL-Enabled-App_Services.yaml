@@ -35,6 +35,9 @@
       when: item.description != "AS3-UseCase-1"
       loop_control:
         label: "{{ item.description}}"
+        
+    - debug:
+        var: previous_as3_exists
 
     - meta: end_play
       when: previous_as3_exists is defined
