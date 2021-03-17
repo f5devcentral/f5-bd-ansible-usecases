@@ -32,21 +32,25 @@
 		  "monitors": [
 			"http"
 		  ],
-		  "members": [
-		    {%  for item in pool_members %}
-			{
-			  "servicePort": 80,
-			  "serverAddresses": [
-			  "{{hostvars[item]['private_ip'] }}"
-			  ] 
- 		      {%  if F5_Pool_Members in hostvars[item] %}
-			  "adminState": "{{F5_Pool_Node_State}}"
-			  {% endif %}
-			}{{ ", " if not loop.last else ""}}
-			{% endfor %}
-		  ]
-		}
-	  }
-	}
+        "members": [
+          {%  for item in pool_members %}
+        {
+          "servicePort": 80,
+          "serverAddresses": [
+          "{{hostvars[item]['private_ip'] }}"
+          ],
+          {%  if hostvars[item]['inventory_hostname'] in F5_Pool_Members %}
+          "adminState": "{{F5_Pool_Node_State}}"
+          {%  elif "all" in F5_Pool_Members|lower %}
+          "adminState": "{{F5_Pool_Node_State}}"
+		  {%  else  %}
+		  "adminState": "Enabled"
+          {% endif %}
+        }{{ ", " if not loop.last else ""}}
+        {% endfor %}
+        ]
+      }
+    }
+  }
   }
 }
