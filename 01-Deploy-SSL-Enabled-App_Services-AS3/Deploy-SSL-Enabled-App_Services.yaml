@@ -33,6 +33,8 @@
       with_items: "{{ previous_as3.json['items'] }}"
       register: previous_as3_exists
       when: item.description != "AS3-UseCase-1"
+      loop_control:
+        label: "{{ item.description}}"
 
     - meta: end_play
       when: previous_as3_exists is defined
