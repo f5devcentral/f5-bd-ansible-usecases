@@ -32,15 +32,18 @@
 					"monitors": [
 						"http"
 					],
-					"members": [{
-						"servicePort": 80,
-					  "serverAddresses": [
-                    {% set comma = joiner(",") %}
-                    {% for mem in pool_members %}
-                        {{comma()}} "{{  hostvars[mem]['private_ip']  }}"
-                    {% endfor %}
-            ]
-					}]
+					"members": [
+						{%  for item in pool_members %}
+							{
+							"servicePort": 80
+							"serverAddresses": [
+							"{{hostvars[item]['private_ip'] }}"
+							] 
+							}{{ ", " if not loop.last else ""}}
+						{% endfor %}
+						]
+					},
+					
 				}
 			}
 		}
