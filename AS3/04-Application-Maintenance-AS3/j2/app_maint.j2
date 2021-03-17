@@ -19,6 +19,7 @@
             "{{private_ip}}"
           ],
           "pool": "{{ F5_VIP_Name }}_pool",
+		  "redirect80": false,
           "serverTLS": {
 					    "bigip": "/Common/clientssl"
 					},
