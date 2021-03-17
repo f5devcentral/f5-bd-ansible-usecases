@@ -29,7 +29,7 @@
       register: previous_as3
 
     - debug: 
-        var: "{{item}}"
+        var: "{{item}}.description"
       with_items: previous_as3.json.items()
 
     - name: PUSH AS3
