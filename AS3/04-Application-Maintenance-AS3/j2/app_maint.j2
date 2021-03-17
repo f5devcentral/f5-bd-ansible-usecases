@@ -39,9 +39,7 @@
 			  "serverAddresses": [
 			  "{{hostvars[item]['private_ip'] }}"
 			  ] 
- 		      {% if node_name in hostvars}
-			  "adminState": "{{F5_Pool_Node_State}}"
-			  {% endif %}
+
 			}{{ ", " if not loop.last else ""}}
 			{% endfor %}
 		  ]
