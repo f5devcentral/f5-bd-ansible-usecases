@@ -44,7 +44,7 @@
           {%  elif "all" in F5_Pool_Members|lower %}
           "adminState": "{{F5_Pool_Node_State|lower}}"
 		  {%  else  %}
-		  "adminState": "enabled"
+		  "adminState": "enable"
           {% endif %}
         }{{ ", " if not loop.last else ""}}
         {% endfor %}
