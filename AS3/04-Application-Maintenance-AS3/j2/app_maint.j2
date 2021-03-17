@@ -40,11 +40,11 @@
           "{{hostvars[item]['private_ip'] }}"
           ],
           {%  if hostvars[item]['inventory_hostname'] in F5_Pool_Members %}
-          "adminState": "{{F5_Pool_Node_State}}"
+          "adminState": "{{F5_Pool_Node_State|lower}}"
           {%  elif "all" in F5_Pool_Members|lower %}
-          "adminState": "{{F5_Pool_Node_State}}"
+          "adminState": "{{F5_Pool_Node_State|lower}}"
 		  {%  else  %}
-		  "adminState": "Enabled"
+		  "adminState": "enabled"
           {% endif %}
         }{{ ", " if not loop.last else ""}}
         {% endfor %}
