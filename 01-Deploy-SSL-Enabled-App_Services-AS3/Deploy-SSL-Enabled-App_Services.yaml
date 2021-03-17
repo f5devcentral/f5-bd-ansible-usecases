@@ -15,7 +15,6 @@
 #      set_fact:
 #        as3_app_body: "{{ lookup('template', 'j2/as3_template.j2', split_lines=False) }}"
 
-
     - name: Check if Previous AS3 Command was run
       ansible.builtin.uri:
         url: "https://{{ ansible_host }}:8443/mgmt/tm/ltm/virtual"
@@ -28,8 +27,11 @@
       delegate_to: localhost
       register: previous_as3
 
-    - name: Check if Previous UseCases exists
-      fail: msg="AS3 Code Didn't Push becasue previous Usecase Exists, please run ansible-playbook delete.yml before re-running"
+    - block:
+      - name: Check if Previous UseCases exists
+        debug:
+          msg: "AS3 Code Didn't Push becasue previous Usecase Exists, please run ansible-playbook delete.yml before re-running"
+      - meta: end_play
       with_items: "{{ previous_as3.json['items'] }}"
       when: item.description != "AS3-UseCase-1"
 
