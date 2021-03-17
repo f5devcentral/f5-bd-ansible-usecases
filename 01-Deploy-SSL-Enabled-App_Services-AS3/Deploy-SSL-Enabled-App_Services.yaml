@@ -28,10 +28,11 @@
       delegate_to: localhost
       register: previous_as3
 
-    - debug: 
-        msg: "{{item.description}}"
-      with_items: 
-        - "{{ previous_as3.json['items'] }}"
+    - name: Check if Previous UseCases exists
+      ansible.builtin.set_fact:
+        usecase: "{{ item }}"
+      with_items: "{{ previous_as3.json['items'] }}"
+      when: item.description != F5_VIP_Name
 
     - name: PUSH AS3
       ansible.builtin.uri:
@@ -46,3 +47,5 @@
         password: "{{ ansible_ssh_pass }}"
         validate_certs: false
       delegate_to: localhost
+      when: usecase is not defined
+      
