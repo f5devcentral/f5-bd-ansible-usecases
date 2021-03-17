@@ -31,11 +31,11 @@
       debug:
         msg: "AS3 Code Didn't Push becasue previous Usecase Exists, please run ansible-playbook delete.yml before re-running"
       with_items: "{{ previous_as3.json['items'] }}"
+      register: previous_as3_exists
       when: item.description != "AS3-UseCase-1"
 
     - meta: end_play
-      with_items: "{{ previous_as3.json['items'] }}"
-      when: item.description != "AS3-UseCase-1"
+      when: previous_as3_exists is defined
 
     - name: PUSH AS3
       ansible.builtin.uri:
