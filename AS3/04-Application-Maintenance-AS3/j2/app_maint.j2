@@ -20,7 +20,9 @@
 					],
 					"pool": "{{ F5_VIP_Name }}_pool",
 					"redirect80": false,
-					"serverTLS": "{{ F5_VIP_Name }}_cert",
+					"serverTLS": {
+              "bigip": "/Common/clientssl"
+          },
           "persistenceMethods": []
 				},
 				"{{ F5_VIP_Name }}_pool": {
@@ -39,18 +41,6 @@
                     {% endfor %}
             ]
 					}]
-				},
-				"{{ F5_VIP_Name }}_cert": {
-					"class": "TLS_Server",
-					"certificates": [{
-						"certificate": "{{ F5_VIP_Name }}_crt"
-					}]
-				},
-				"{{ F5_VIP_Name }}_crt": {
-					"class": "Certificate",
-					"remark": "in practice we recommend using a passphrase",
-          "certificate": "{{ lookup('file', '{{playbook_dir}}/app-demo.crt') | replace('\n', '\\n') }}",
-          "privateKey": "{{ lookup('file', '{{playbook_dir}}/app-demo.key') | replace('\n', '\\n') }}"
 				}
 			}
 		}
