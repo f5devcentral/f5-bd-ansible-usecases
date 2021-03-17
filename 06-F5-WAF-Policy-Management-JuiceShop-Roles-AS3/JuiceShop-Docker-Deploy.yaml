@@ -4,7 +4,6 @@
   gather_facts: false
   become: yes
   roles:
-    - previous_usecases_run
     - install_docker
     - install_juice_shop
     - install_nginx
