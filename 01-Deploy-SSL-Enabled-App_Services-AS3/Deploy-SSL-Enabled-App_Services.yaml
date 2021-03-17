@@ -18,7 +18,7 @@
 
     - name: Check if Previous AS3 Command was run
       ansible.builtin.uri:
-        url: "https://{{ ansible_host }}:8443/mgmt/tm/auth/partition"
+        url: "https://{{ ansible_host }}:8443/mgmt/tm/ltm/virtual"
         method: GET
         return_content: yes
         force_basic_auth: true
@@ -30,7 +30,7 @@
 
     - debug: 
         var: previous_as3
-        
+
     - name: PUSH AS3
       ansible.builtin.uri:
         url: "https://{{ ansible_host }}:{{ F5_Admin_Port }}/mgmt/shared/appsvcs/declare"
