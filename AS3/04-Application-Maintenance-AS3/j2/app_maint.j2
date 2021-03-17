@@ -33,7 +33,7 @@
 		  "members": [
 		    {%  for item in pool_members %}
 			{
-			  "servicePort": 80
+			  "servicePort": 80,
 			  "serverAddresses": [
 			  "{{hostvars[item]['private_ip'] }}"
 			  ] 
