@@ -4,10 +4,7 @@ F5_Admin_Port: '8443'
 F5_VIP_Name: "Use-Case-4-VIP"
 F5_Pool_Name: "Use-Case-4-VIP_pool"
 
-
 pool_members: "{{ groups['web'] }}"
-F5_VIP_Name: Use-Case-4-VIP
-
 
 # Array can Pass Single Node, Multiple Nodes, or "ALL" Nodes (When Using All use single array object with all in it do not mix with Nodes)
 F5_Pool_Members:
