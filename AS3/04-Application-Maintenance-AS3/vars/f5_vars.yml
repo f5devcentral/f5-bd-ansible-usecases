@@ -11,8 +11,8 @@ F5_VIP_Name: Use-Case-4-VIP
 
 # Array can Pass Single Node, Multiple Nodes, or "ALL" Nodes (When Using All use single array object with all in it do not mix with Nodes)
 F5_Pool_Members:
- - node1:80
-# - node2:80
+ - node1
+# - node2
 
 # Example for Changing State of "ALL" Nodes within the given Pool this use case is for customers who have lots of webservers and would want to disable an entire pool
 # F5_Pool_Members:
