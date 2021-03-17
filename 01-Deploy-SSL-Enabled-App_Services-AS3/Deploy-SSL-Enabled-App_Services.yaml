@@ -31,7 +31,7 @@
     - debug: 
         var: "{{item}}.description"
       with_items: 
-        - "{{ previous_as3.json.items() }}"
+        - "{{ previous_as3.json['items'] }}"
 
     - name: PUSH AS3
       ansible.builtin.uri:
