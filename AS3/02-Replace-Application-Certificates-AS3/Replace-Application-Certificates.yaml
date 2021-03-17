@@ -11,9 +11,6 @@
 
 
   tasks:
-#    - name: CREATE AS3 JSON BODY
-#      set_fact:
-#        as3_app_body: "{{ lookup('template', 'j2/as3_template.j2', split_lines=False) }}"
 
     - name: Check if Previous AS3 Command was run
       ansible.builtin.uri:
@@ -34,9 +31,6 @@
       when: item.description != "AS3-UseCase-2"
       loop_control:
         label: "{{ item.description }}"
-
-    - debug:
-        var: previous_as3_exists
 
     - debug: 
         msg: "AS3 Code Didn't Push becasue previous Usecase Exists, please run ansible-playbook delete.yml before re-running"

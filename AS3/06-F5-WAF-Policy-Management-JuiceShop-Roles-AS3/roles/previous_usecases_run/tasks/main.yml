@@ -19,9 +19,6 @@
     loop_control:
       label: "{{ item.description }}"
 
-  - debug:
-      var: previous_as3_exists
-
   - debug: 
       msg: "AS3 Code Didn't Push becasue previous Usecase Exists, please run ansible-playbook delete.yml before re-running"
     when: previous_as3_exists is defined
