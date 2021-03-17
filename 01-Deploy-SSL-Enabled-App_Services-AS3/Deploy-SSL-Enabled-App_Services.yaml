@@ -31,7 +31,7 @@
     - name: Check if Previous UseCases exists
       ansible.builtin.set_fact:
         usecase: "{{ item }}"
-      with_items: "{{ previous_as3.json['items'] }}"
+      with_items: "{{ previous_as3.json.name}}"  #['items'] }}"
       when: item.description != F5_VIP_Name
 
     - name: PUSH AS3
