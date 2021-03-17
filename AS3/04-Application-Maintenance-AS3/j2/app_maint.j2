@@ -37,8 +37,7 @@
 			  "serverAddresses": [
 			  "{{hostvars[item]['private_ip'] }}"
 			  ] 
-			}
-			{{ ", " if not loop.last else ""}}
+			}{{ ", " if not loop.last else ""}}
 			{% endfor %}
 		  ]
 		}
