@@ -32,7 +32,7 @@
       ansible.builtin.set_fact:
         usecase: "{{ item }}"
       with_items: "{{ previous_as3.json.name}}"  #['items'] }}"
-      when: item.description != F5_VIP_Name
+      when: item.description != "AS3-UseCase-1"
 
     - name: PUSH AS3
       ansible.builtin.uri:
@@ -49,3 +49,6 @@
       delegate_to: localhost
       when: usecase is not defined
       
+    - debug:
+        msg: "AS3 Code Didn't Push becasue previous Usecase Exists, please run ansible-playbook delete.yml before re-running"
+      when: usecase is defined
