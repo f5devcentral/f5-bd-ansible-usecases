@@ -29,7 +29,8 @@
       register: previous_as3
 
     - debug: 
-        var: previous_as3
+        var: "{{item}}"
+      with_items: previous_as3.json.items
 
     - name: PUSH AS3
       ansible.builtin.uri:
