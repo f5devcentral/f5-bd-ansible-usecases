@@ -15,6 +15,22 @@
 #      set_fact:
 #        as3_app_body: "{{ lookup('template', 'j2/as3_template.j2', split_lines=False) }}"
 
+
+    - name: Check if Previous AS3 Command was run
+      ansible.builtin.uri:
+        url: "https://{{ ansible_host }}:8443/mgmt/tm/auth/partition"
+        method: GET
+        return_content: yes
+        force_basic_auth: true
+        user: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
+        validate_certs: false
+      delegate_to: localhost
+      register: previous_as3
+
+    - debug: 
+        var: previous_as3
+        
     - name: PUSH AS3
       ansible.builtin.uri:
         url: "https://{{ ansible_host }}:{{ F5_Admin_Port }}/mgmt/shared/appsvcs/declare"
