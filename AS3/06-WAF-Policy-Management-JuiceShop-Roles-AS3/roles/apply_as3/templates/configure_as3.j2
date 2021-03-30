@@ -5,12 +5,12 @@
 	"declaration": {
 		"class": "ADC",
 		"schemaVersion": "3.0.0",
-		"id": "usecase6",
-		"label": "Ansible Workshops 6",
-		"remark": "HTTPS with pool 6",
+		"id": "usecase5",
+		"label": "Ansible Workshops 5",
+		"remark": "HTTPS with pool 5",
 		"AnsibleWorkshop": {
 			"class": "Tenant",
-			"AS3-UseCase-6": {
+			"AS3-UseCase-5": {
 				"class": "Application",
 				"{{F5_VIP_Name}}": {
 					"class": "Service_HTTPS",
@@ -48,7 +48,7 @@
 				},
 			"{{F5_VIP_Name}}-Policy": {
       "class": "WAF_Policy",
-      "url": "https://bitbucket.org/vdi-tech-guy/{{repo_name}}/raw/master/{{ASM_Final_File_Name}}",
+      "url": "{{git_website}}{{git_workspace}}/{{repo_name}}/raw/master/{{ASM_Final_File_Name}}",
       "ignoreChanges": false
 			}
 			}

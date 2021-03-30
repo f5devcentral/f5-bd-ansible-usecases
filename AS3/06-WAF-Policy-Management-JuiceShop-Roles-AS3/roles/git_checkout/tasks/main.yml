@@ -12,7 +12,7 @@
 
  - name: Check if Repo Exists
    ansible.builtin.uri:
-     url: https://api.bitbucket.org/2.0/repositories/vdi-tech-guy/
+     url: "{{git_api_url}}{{git_workspace}}"
      method: GET
      user: "{{git_username}}"
      password: "{{git_password}}"
@@ -40,7 +40,7 @@
 
  - name: Git checkout
    ansible.builtin.git:
-     repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@bitbucket.org/vdi-tech-guy/f5-asm-policies.git"
+     repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_asm_default_repo[8:]}}"
      dest: ~/asm-xml-files
    when: student_id is undefined
 
@@ -52,7 +52,7 @@
 
  - name: Git checkout
    ansible.builtin.git:
-     repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@bitbucket.org/vdi-tech-guy/{{repo_name}}"
+     repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}"
      dest: ~/asm-xml-files
    ignore_errors: true
    when: student_id is defined

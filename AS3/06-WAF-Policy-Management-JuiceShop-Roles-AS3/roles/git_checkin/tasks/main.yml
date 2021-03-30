@@ -17,7 +17,7 @@
    
  - name: Check if Repo Exists
    ansible.builtin.uri:
-     url: https://api.bitbucket.org/2.0/repositories/vdi-tech-guy/
+     url: "{{git_api_url}}{{git_workspace}}"
      method: GET
      user: "{{git_username}}"
      password: "{{git_password}}"
@@ -36,7 +36,7 @@
 
  - name: Create a Bitbucket Repo
    ansible.builtin.uri:
-     url: https://api.bitbucket.org/2.0/repositories/vdi-tech-guy/{{repo_name}}
+     url: "{{git_api_url}}{{git_workspace}}/{{repo_name}}"
      method: POST
      user: "{{git_username}}"
      password: "{{git_password}}"
@@ -49,7 +49,7 @@
 
  - name: Git checkout
    ansible.builtin.git:
-     repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@bitbucket.org/vdi-tech-guy/{{repo_name}}"
+     repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}"
      dest: ~/asm-xml-files-student
    ignore_errors: true
    when: sha_matched is defined
@@ -76,7 +76,7 @@
  - name: Ensure remote URL does not contain credentials
    community.general.git_config:
      name: remote.origin.url
-     value: "https://bitbucket.org/vdi-tech-guy/f5-asm-policies.git"
+     value: "{{git_asm_default_repo}}"
      scope: local
      repo: ~/asm-xml-files
    when: sha_matched is defined
@@ -84,7 +84,7 @@
  - name: Ensure remote URL does not contain credentials
    community.general.git_config:
      name: remote.origin.url
-     value: "https://bitbucket.org/vdi-tech-guy/{{repo_name}}"
+     value: "{{git_website}}{{git_workspace}}/{{repo_name}}"
      scope: local
      repo: ~/asm-xml-files-student
    when: sha_matched is defined
