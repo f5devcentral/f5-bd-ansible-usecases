@@ -190,7 +190,7 @@
 
   - name: Git checkout
     ansible.builtin.git:
-      repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace[8:]}}/{{repo_name}}"
+      repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}"
       dest: ~/asm-xml-files
     ignore_errors: true
     when: student_id is defined
