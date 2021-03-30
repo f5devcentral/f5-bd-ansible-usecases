@@ -1,4 +1,4 @@
-- name: Download latest AS3 RPM
+- name: Download latest DO RPM
   hosts: localhost
   connection: local
   gather_facts: no
@@ -56,7 +56,7 @@
     - ansible.builtin.set_fact:
        do_rpm: "{{ls_output.stdout}}"
 
-    - name: Install AS3
+    - name: Install DO
       f5networks.f5_modules.bigip_lx_package:
        package: "~/{{do_rpm}}"
        provider: "{{provider}}"
