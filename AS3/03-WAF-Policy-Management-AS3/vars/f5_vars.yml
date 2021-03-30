@@ -25,7 +25,7 @@ git_password: "2UEcBDRpK5TKUGwraHgx" #This Code is invalid needs to be changed.
 git_email: "m.mabis@f5.com"
 
 #GIT Site Information
-git_website: "https://bitbucket.org"
+git_website: "https://bitbucket.org/"
 git_api_url: "https://api.bitbucket.org/2.0/repositories/"
 git_workspace: "vdi-tech-guy"
 git_asm_default_repo: "https://bitbucket.org/vdi-tech-guy/f5-asm-policies.git" #This repo is public and can be used regardless of site/credentials 
