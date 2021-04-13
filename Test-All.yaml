@@ -9,7 +9,7 @@
 
 - hosts: localhost
   vars_files:
-    - Modules/01-Deploy-SSL-Enabled-App_Services/f5_vars.yml
+    - "Modules/01-Deploy-SSL-Enabled-App_Services/f5_vars.yml"
   tasks:
     - debug:
         msg: UC1
