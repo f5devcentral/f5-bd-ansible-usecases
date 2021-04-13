@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  tasks: 
+    - debug:
+        msg: UC0
+
+- name: Use-Case-00 - Backup  
+  include: Modules/00-Backup-Restore-Role/Backup-Role.yaml
+  vars:
+    wrapped: "{{ lookup('file', 'Modules/00-Backup-Restore-Role/vars/f5_vars.yml') |from_yaml }}"
