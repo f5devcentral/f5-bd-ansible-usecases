@@ -333,6 +333,7 @@
 
   - pause:
       seconds: 20
+    when: sha_matched is defined and student_id is undefined
       
   - name: Git checkout
     ansible.builtin.git:
