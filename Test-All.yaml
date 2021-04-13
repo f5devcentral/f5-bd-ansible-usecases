@@ -15,4 +15,4 @@
         msg: UC1
 
 - name: Use-Case-01
-  include_playbook: Modules/01-Deploy-SSL-Enabled-App_Services/Deploy-SSL-Enabled-App_Services.yaml
+  ansible.builtin.import_playbook: Modules/01-Deploy-SSL-Enabled-App_Services/Deploy-SSL-Enabled-App_Services.yaml
