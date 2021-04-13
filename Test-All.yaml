@@ -14,5 +14,7 @@
     - debug:
         msg: UC1
 
+- name: UC1 Vars
+  ansible.builtin.include_vars: Modules/01-Deploy-SSL-Enabled-App_Services/f5_vars.yml
 - name: Use-Case-01
   ansible.builtin.import_playbook: Modules/01-Deploy-SSL-Enabled-App_Services/Deploy-SSL-Enabled-App_Services.yaml
