@@ -16,21 +16,21 @@
      var: as3_output.stdout_lines[0]
 
   - ansible.builtin.set_fact:
-     as3_release: "{{as3_output.stdout_lines[0]}}"
+     as3_release: "{{ as3_output.stdout_lines[0] }}"
 
   - name: Get latest AS3 RPM version
-    ansible.builtin.shell: wget -O - {{as3_uri}} | grep -E rpm | head -1 | cut -d "/" -f 6
+    ansible.builtin.shell: wget -O - {{ as3_uri }} | grep -E rpm | head -1 | cut -d "/" -f 6
     register: as3_output
 
   - debug:
      var: as3_output.stdout_lines[0]
 
   - ansible.builtin.set_fact:
-     as3_release_tag: "{{as3_output.stdout_lines[0]}}"
+     as3_release_tag: "{{ as3_output.stdout_lines[0] }}"
 
   - name: Grab AS3 RPM from github
     ansible.builtin.get_url:
-     url: "{{as3_uri}}/download/{{as3_release_tag}}/{{as3_release}}?raw=true"
+     url: "{{ as3_uri }}/download/{{ as3_release_tag }}/{{ as3_release }}?raw=true"
      dest: "~/"
      validate_certs: false
 
@@ -43,9 +43,9 @@
     - name: Set a fact named 'provider' with BIG-IP login information
       ansible.builtin.set_fact:
        provider:
-        server: "{{private_ip}}"
-        user: "{{ansible_user}}"
-        password: "{{ansible_ssh_pass}}"
+        server: "{{ private_ip }}"
+        user: "{{ ansible_user }}"
+        password: "{{ ansible_ssh_pass }}"
         server_port: 8443
         validate_certs: no
 
@@ -54,9 +54,9 @@
       register: ls_output
 
     - ansible.builtin.set_fact:
-       as3_rpm: "{{ls_output.stdout}}"
+       as3_rpm: "{{ ls_output.stdout }}"
 
     - name: Install AS3
       f5networks.f5_modules.bigip_lx_package:
-       package: "~/{{as3_rpm}}"
-       provider: "{{provider}}"
+       package: "~/{{ as3_rpm }}"
+       provider: "{{ provider }}"

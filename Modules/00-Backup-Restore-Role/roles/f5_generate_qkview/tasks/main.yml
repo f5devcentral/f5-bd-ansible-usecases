@@ -3,6 +3,5 @@
 
  - name: QKView F5
    include: f5_generate_qkview.yaml
-   tags: 
+   tags:
      - qkview
-

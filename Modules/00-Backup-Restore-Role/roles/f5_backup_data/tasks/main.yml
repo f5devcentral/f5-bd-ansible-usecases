@@ -3,6 +3,5 @@
 
  - name: Backup F5 Configuration
    include: f5_backup_config.yaml
-   tags: 
+   tags:
      - backup
-
