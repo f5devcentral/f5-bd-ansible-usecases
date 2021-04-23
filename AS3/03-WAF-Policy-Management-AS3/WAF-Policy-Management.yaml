@@ -29,7 +29,7 @@
     loop_control:
       label: "{{ item.description }}"
 
-  - debug: 
+  - debug:
       msg: "AS3 Code Didn't Push becasue previous Usecase Exists, please run ansible-playbook delete.yml before re-running"
     when: previous_as3_exists is defined
 
@@ -70,17 +70,17 @@
 
   - name: Grab DO RPM from github
     ansible.builtin.get_url:
-     url: "{{do_uri}}/download/{{do_release_tag}}/{{do_release}}?raw=true"
+     url: "{{ do_uri }}/download/{{ do_release_tag }}/{{ do_release }}?raw=true"
      dest: "~/"
      validate_certs: false
 
   - name: Set a fact named 'provider' with BIG-IP login information
     ansible.builtin.set_fact:
      provider:
-      server: "{{private_ip}}"
-      user: "{{ansible_user}}"
-      password: "{{ansible_ssh_pass}}"
-      server_port: "{{F5_Admin_Port}}"
+      server: "{{ private_ip }}"
+      user: "{{ ansible_user }}"
+      password: "{{ ansible_ssh_pass }}"
+      server_port: "{{ F5_Admin_Port }}"
       validate_certs: no
 
   - name: Grab the DO version from the home directory
@@ -88,12 +88,12 @@
     register: ls_output
 
   - ansible.builtin.set_fact:
-     do_rpm: "{{ls_output.stdout}}"
+     do_rpm: "{{ ls_output.stdout }}"
 
   - name: Install DO
     f5networks.f5_modules.bigip_lx_package:
-     package: "~/{{do_rpm}}"
-     provider: "{{provider}}"
+     package: "~/{{ do_rpm }}"
+     provider: "{{ provider }}"
     register: install_do
 
   - name: Pause for Install to complete
@@ -103,7 +103,7 @@
 
   - name: GET ASM - Module Install Status
     ansible.builtin.uri:
-      url: "https://{{ ansible_host }}:{{F5_Admin_Port}}/mgmt/tm/sys/provision/asm"
+      url: "https://{{ ansible_host }}:{{ F5_Admin_Port }}/mgmt/tm/sys/provision/asm"
       method: GET
       status_code: 200
       timeout: 300
@@ -116,7 +116,7 @@
 
   - name: Install ASM - Push via DO (if not Installed)
     ansible.builtin.uri:
-      url: "https://{{ ansible_host }}:{{F5_Admin_Port}}/mgmt/shared/declarative-onboarding/declare"
+      url: "https://{{ ansible_host }}:{{ F5_Admin_Port }}/mgmt/shared/declarative-onboarding/declare"
       method: POST
       body: "{{ lookup('template','j2/provision.j2', split_lines=False) }}"
       status_code: 202
@@ -132,7 +132,7 @@
     
   - name: Wait for DO Task to complete
     ansible.builtin.uri:
-      url: "https://{{ ansible_host }}:{{F5_Admin_Port}}/mgmt/shared/declarative-onboarding/task/{{ do_result.json.id }}"
+      url: "https://{{ ansible_host }}:{{ F5_Admin_Port }}/mgmt/shared/declarative-onboarding/task/{{ do_result.json.id }}"
       method: GET
       return_content: true
       status_code: 200
@@ -150,10 +150,10 @@
 
   - name: Check if Repo Exists
     ansible.builtin.uri:
-      url: "{{git_api_url}}{{git_workspace}}"
+      url: "{{ git_api_url }}{{ git_workspace }}"
       method: GET
-      user: "{{git_username}}"
-      password: "{{git_password}}"
+      user: "{{ git_username }}"
+      password: "{{ git_password }}"
       force_basic_auth: yes
       status_code: 200
       body_format: json
@@ -163,7 +163,7 @@
   - name: check if repo exists
     ansible.builtin.set_fact:
       student_id: "{{ item }}"
-    with_items: "{{repo_info.json['values']}}"
+    with_items: "{{ repo_info.json['values'] }}"
     when: item.name == repo_name
 
   - name: Removes directory if Exists
@@ -178,19 +178,19 @@
 
   - name: Git checkout
     ansible.builtin.git:
-      repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_asm_default_repo[8:]}}"
+      repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{ git_asm_default_repo[8:] }}"
       dest: ~/asm-xml-files
     when: student_id is undefined
 
   - name: Copy Master Template to TMP
     ansible.builtin.copy:
-      src: "{{ASM_Master_File}}"
+      src: "{{ ASM_Master_File }}"
       dest: "{{ ASM_Policy_File }}"
     when: student_id is undefined
 
   - name: Git checkout
     ansible.builtin.git:
-      repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}"
+      repo: "https://{{ git_username | urlencode }}:{{ git_password | urlencode }}@{{ git_website[8:] }}{{ git_workspace }}/{{ repo_name }}"
       dest: ~/asm-xml-files
     ignore_errors: true
     when: student_id is defined
@@ -206,7 +206,7 @@
 
   - name: Copy Master Template to TMP
     ansible.builtin.copy:
-      src: "~/asm-xml-files/{{latest_file_output.stdout}}"
+      src: "~/asm-xml-files/{{ latest_file_output.stdout }}"
       dest: "{{ ASM_Policy_File }}"
     when: student_id is defined
 
@@ -217,7 +217,7 @@
   
   - name: Master Template SHA1
     ansible.builtin.set_fact:
-      file1_sha: "{{ first_file.stat.checksum }}"  
+      file1_sha: "{{ first_file.stat.checksum }}"
 
 #Validate Existing IP Addresses
   - name: Validate Existing IP Addresses
@@ -296,15 +296,15 @@
 
   - name: Compilation Changed
     ansible.builtin.set_fact:
-      sha_matched: = "{{file2_sha and file1_sha}}"
+      sha_matched: = "{{ file2_sha and file1_sha }}"
     when:  file2_sha != file1_sha
    
   - name: Check if Repo Exists
     ansible.builtin.uri:
-      url: "{{git_api_url}}{{git_workspace}}"
+      url: "{{ git_api_url }}{{ git_workspace }}"
       method: GET
-      user: "{{git_username}}"
-      password: "{{git_password}}"
+      user: "{{ git_username }}"
+      password: "{{ git_password }}"
       force_basic_auth: yes
       status_code: 200
       body_format: json
@@ -315,15 +315,15 @@
   - name: check if repo exists
     ansible.builtin.set_fact:
       student_id: "{{ item }}"
-    with_items: "{{repo_info.json['values']}}"
+    with_items: "{{ repo_info.json['values'] }}"
     when: sha_matched is defined and item.name == repo_name
 
   - name: Create a Bitbucket Repo
     ansible.builtin.uri:
-      url: "{{git_api_url}}{{git_workspace}}/{{repo_name}}"
+      url: "{{ git_api_url }}{{ git_workspace }}/{{ repo_name }}"
       method: POST
-      user: "{{git_username}}"
-      password: "{{git_password}}"
+      user: "{{ git_username }}"
+      password: "{{ git_password }}"
       body: "{{ lookup('template','j2/create_repo.j2', split_lines=False) }}"
       force_basic_auth: yes
       status_code: 200
@@ -337,19 +337,19 @@
       
   - name: Git checkout
     ansible.builtin.git:
-      repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}"
+      repo: "https://{{ git_username | urlencode }}:{{ git_password | urlencode }}@{{ git_website[8:] }}{{ git_workspace }}/{{ repo_name }}"
       dest: ~/asm-xml-files-student
     ignore_errors: true
     when: sha_matched is defined
 
   - name: Copy Modified File to Git Repo
     ansible.builtin.copy:
-      src: "{{ASM_Policy_File}}"
-      dest: "~/asm-xml-files-student/{{ASM_Final_File_Name}}"
+      src: "{{ ASM_Policy_File }}"
+      dest: "~/asm-xml-files-student/{{ ASM_Final_File_Name }}"
     when: sha_matched is defined
     register: file_name_output
 
-  - ansible.builtin.debug: 
+  - ansible.builtin.debug:
       var: file_name_output
 
   - name: Commit Changes to Git
@@ -364,7 +364,7 @@
   - name: Ensure remote URL does not contain credentials
     community.general.git_config:
       name: remote.origin.url
-      value: "{{git_asm_default_repo}}"
+      value: "{{ git_asm_default_repo }}"
       scope: local
       repo: ~/asm-xml-files
     when: sha_matched is defined
@@ -372,7 +372,7 @@
   - name: Ensure remote URL does not contain credentials
     community.general.git_config:
       name: remote.origin.url
-      value: "{{git_website}}{{git_workspace}}/{{repo_name}}"
+      value: "{{ git_website }}{{ git_workspace }}/{{ repo_name }}"
       scope: local
       repo: ~/asm-xml-files-student
     when: sha_matched is defined
@@ -382,7 +382,7 @@
      
   - name: PUSH AS3
     ansible.builtin.uri:
-      url: "https://{{ ansible_host }}:{{F5_Admin_Port}}/mgmt/shared/appsvcs/declare"
+      url: "https://{{ ansible_host }}:{{ F5_Admin_Port }}/mgmt/shared/appsvcs/declare"
       method: POST
       body: "{{ lookup('template','j2/configure_as3.j2', split_lines=False) }}"
       status_code: 200, 202
@@ -397,7 +397,7 @@
 
   - name: PUSH AS3 ALT
     ansible.builtin.uri:
-      url: "https://{{ ansible_host }}:{{F5_Admin_Port}}/mgmt/shared/appsvcs/declare"
+      url: "https://{{ ansible_host }}:{{ F5_Admin_Port }}/mgmt/shared/appsvcs/declare"
       method: POST
       body: "{{ lookup('template','j2/configure_as3_alt.j2', split_lines=False) }}"
       status_code: 200, 202
