@@ -26,17 +26,19 @@
 
     - name: Check if Previous UseCases exists
       set_fact:
-        previous_as3_exists: "{{item.description}}"
+        previous_as3_exists: "{{ item.description }}"
       with_items: "{{ previous_as3.json['items'] }}"
       when: item.description != "AS3-UseCase-2"
       loop_control:
         label: "{{ item.description }}"
 
-    - debug: 
+    - name: "AS3 Code Didn't Push"
+      debug:
         msg: "AS3 Code Didn't Push becasue previous Usecase Exists, please run ansible-playbook delete.yml before re-running"
       when: previous_as3_exists is defined
 
-    - meta: end_play
+    - name: Meta
+      meta: end_play
       when: previous_as3_exists is defined
 
     - name: PUSH AS3

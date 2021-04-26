@@ -1,5 +1,5 @@
 - name: Creating HTTP-Redirect for Existing Application
-  hosts: lb 
+  hosts: lb
   connection: local
   gather_facts: false
   
@@ -8,16 +8,16 @@
   - name: Setup provider
     ansible.builtin.set_fact:
      provider:
-      server: "{{private_ip}}"
-      user: "{{ansible_user}}"
-      password: "{{ansible_ssh_pass}}"
-      server_port: "{{F5_Admin_Port}}"
+      server: "{{ private_ip }}"
+      user: "{{ ansible_user }}"
+      password: "{{ ansible_ssh_pass }}"
+      server_port: "{{ F5_Admin_Port }}"
       validate_certs: "no"
 
 #Creeate VIP and Pool Member for Use Case
   - name: Create Pool with Members
     f5networks.f5_modules.bigip_pool:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       state: present
       name: "{{ F5_VIP_Name }}_pool"
       lb_method: round-robin
@@ -27,16 +27,16 @@
   - name: Add Pool Members
     f5networks.f5_modules.bigip_pool_member:
       state: present
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       pool: "{{ F5_VIP_Name }}_pool"
-      name: "{{hostvars[item].inventory_hostname}}"
-      host: "{{hostvars[item].private_ip}}"
+      name: "{{ hostvars[item].inventory_hostname }}"
+      host: "{{ hostvars[item].private_ip }}"
       port: "80"
     loop: "{{ groups['web'] }}"
 
   - name: Create a HTTPS Virtual Server
     f5networks.f5_modules.bigip_virtual_server:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       state: present
       description: "HTTPS Virtual Server"
       name: "{{ F5_VIP_Name }}_https_vip"
@@ -54,7 +54,7 @@
 #Create HTTP Redirect VS
   - name: Create a HTTP Redirect Virtual Server
     f5networks.f5_modules.bigip_virtual_server:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       description: "Redirect Virtual server"
       name: "{{ F5_VIP_Name }}_http_redirect"
       destination: "{{ private_ip }}"

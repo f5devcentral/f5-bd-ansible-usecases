@@ -1,29 +1,25 @@
----  
+---
 - name: ASM Policy Update with Blocked URLS, IPs or Both
   hosts: lb
   connection: local
-  gather_facts: false 
+  gather_facts: false
 
   tasks:
   - name: Setup provider
     ansible.builtin.set_fact:
-     provider:
-      server: "{{private_ip}}"
-      user: "{{ansible_user}}"
-      password: "{{ansible_ssh_pass}}"
-      server_port: "{{F5_Admin_Port}}"
+      provider: "{{ provider }}"
       validate_certs: "no"
 
 #Provision BIGIP-ASM
   - name: Provision ASM
     f5networks.f5_modules.bigip_provision:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       module: asm
 
 #Create Pool and Virtual Server for Use Case
   - name: Create Pool with Members
     f5networks.f5_modules.bigip_pool:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       state: present
       name: "{{ F5_VIP_Name }}_pool"
       lb_method: round-robin
@@ -32,25 +28,25 @@
 
   - name: Add Pool Members
     f5networks.f5_modules.bigip_pool_member:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       state: present
       pool: "{{ F5_VIP_Name }}_pool"
-      name: "{{hostvars[item].inventory_hostname}}"
-      host: "{{hostvars[item].private_ip}}"
+      name: "{{ hostvars[item].inventory_hostname }}"
+      host: "{{ hostvars[item].private_ip }}"
       port: "80"
     loop: "{{ groups['web'] }}"
 
 #Create ASM Policy
   - name: Create ASM Policy
     f5networks.f5_modules.bigip_asm_policy_manage:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       name: "{{ ASM_Policy_Name }}"
       active: no
 
 #Fetch ASM_Policy to Variable
   - name: Fetching ASM Policy
     f5networks.f5_modules.bigip_asm_policy_fetch:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       name: "{{ ASM_Policy_Name }}"
       inline: yes
       force: yes
@@ -58,7 +54,8 @@
     when: Blocked_URLs is defined or Blocked_IPs is defined
 
 #Output Data to File due to BUG 1390
-  - ansible.builtin.copy:
+  - name: "Copy File"
+    ansible.builtin.copy:
       content: "{{ ASM_Policy.inline_policy }}"
       dest: "{{ ASM_Policy_File }}"
     when: Blocked_URLs is defined or Blocked_IPs is defined
@@ -127,19 +124,19 @@
         - "<block>true</block>"
         - "<learn>true</learn>"
         - "<policy_builder_tracking>enabled</policy_builder_tracking>"
-    when: Blocked_URLs is defined  
+    when: Blocked_URLs is defined
 
 #Re-Deploy ASM policy
   - name: Create an LTM policy
     f5networks.f5_modules.bigip_policy:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       name: "{{ ASM_Policy_Name }}"
       state: present
     when: Blocked_URLs is defined or Blocked_IPs is defined
 
   - name: Import ASM policy
     f5networks.f5_modules.bigip_asm_policy_import:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       name: "{{ ASM_Policy_Name }}"
       source: "{{ ASM_Policy_File }}"
       force: yes
@@ -147,7 +144,7 @@
 
   - name: Replace a forward action with an ASM action
     f5networks.f5_modules.bigip_policy_rule:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       policy: "{{ ASM_Policy_Name }}"
       name: rule1
       actions:
@@ -157,7 +154,7 @@
 
   - name: Deploy Draft ASM policy
     f5networks.f5_modules.bigip_policy:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       name: "{{ ASM_Policy_Name }}"
       state: present
       rules:
@@ -167,7 +164,7 @@
 #Assign ASM Policy to VIP
   - name: Create a HTTPS Virtual Server
     f5networks.f5_modules.bigip_virtual_server:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       state: present
       description: "HTTPS Virtual Server"
       name: "{{ F5_VIP_Name }}_https_vip"
@@ -188,12 +185,12 @@
 #Apply Draft ASM policy
   - name: Activate ASM Policy
     f5networks.f5_modules.bigip_asm_policy_manage:
-      provider: "{{provider}}"
+      provider: "{{ provider }}"
       name: "{{ ASM_Policy_Name }}"
       active: yes
 
 #Publish ASM Policy via TMSH
   - name: Publish ASM Policy via TMSH
     f5networks.f5_modules.bigip_command:
-      commands: "publish asm policy {{ASM_Policy_Name}}"
-      provider: "{{provider}}"
+      commands: "publish asm policy {{ ASM_Policy_Name }}"
+      provider: "{{ provider }}"
