@@ -59,7 +59,7 @@
        - name: clientssl
          context: client-side
        - oneconnect
-    when: F5_VIP_Name is defined and previous_run_exists not defined        
+    when: (F5_VIP_Name is defined) and (previous_run_exists not defined)
 
   - name: Add Pool Members
     f5networks.f5_modules.bigip_pool_member:
