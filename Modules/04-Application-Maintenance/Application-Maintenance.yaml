@@ -14,6 +14,26 @@
       server_port: "{{F5_Admin_Port}}"
       validate_certs: "no"
 
+  - name: Check if Command was previously run
+    ansible.builtin.uri:
+      url: "https://{{ ansible_host }}:8443/mgmt/tm/ltm/virtual"
+      method: GET
+      return_content: yes
+      force_basic_auth: true
+      user: "{{ ansible_user }}"
+      password: "{{ ansible_ssh_pass }}"
+      validate_certs: false
+    delegate_to: localhost
+    register: previous_run
+
+  - name: Check if Previous run exists
+    set_fact:
+      previous_run_exists: "{{item.description}}"
+    with_items: "{{ previous_run.json['items'] }}"
+    when: item.description = "{{ F5_VIP_Name }}_https_vip"
+    loop_control:
+      label: "{{ item.description }}"
+
   - name: Create Pool with Members
     f5networks.f5_modules.bigip_pool:
       provider: "{{provider}}"
@@ -22,6 +42,7 @@
       lb_method: round-robin
       monitors:
         - http
+    when: previous_run_exists not defined        
 
   - name: Create a HTTPS Virtual Server
     f5networks.f5_modules.bigip_virtual_server:
@@ -38,7 +59,7 @@
        - name: clientssl
          context: client-side
        - oneconnect
-    when: F5_VIP_Name is defined
+    when: F5_VIP_Name is defined and previous_run_exists not defined        
 
   - name: Add Pool Members
     f5networks.f5_modules.bigip_pool_member:
@@ -50,13 +71,14 @@
       port: "80"
       preserve_node: "yes"
     loop: "{{ groups['web'] }}"
+    when: previous_as3_exists not defined        
 
   - name: Query BIG-IP facts
     f5networks.f5_modules.bigip_device_info:
       provider: "{{provider}}"
       gather_subset:
        - ltm-pools
-    register: bigip_facts
+    register: bigip_facts       
 
   - name: Change ALL pool members State to {{F5_Pool_Node_State}}
     f5networks.f5_modules.bigip_pool_member:
