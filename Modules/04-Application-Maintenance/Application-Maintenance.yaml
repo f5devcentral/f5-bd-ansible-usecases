@@ -26,8 +26,8 @@
 
   - name: Check if Previous run exists
     set_fact:
-      previous_run_exists: "{{item.name}}"
-    with_items: "{{ previous_run.json['items'] }}"
+      previous_run_exists: "{{ item.name }}"
+    with_items: "{{ previous_run.virtual_servers['items'] }}"
     when: item.name == "Use-Case-4-VIP_https_vip"
     loop_control:
       label: "{{ item.name }}"
