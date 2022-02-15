@@ -21,8 +21,8 @@
        - virtual-servers
     register: previous_run   
 
-  - debug:
-      var: previous_run
+  # - debug:
+  #     var: previous_run
 
   - name: Check if Previous run exists
     set_fact:
