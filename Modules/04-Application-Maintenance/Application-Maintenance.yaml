@@ -28,7 +28,7 @@
     set_fact:
       previous_run_exists: "{{item.name}}"
     with_items: "{{ previous_run.json['items'] }}"
-    when: item.name == "{{ F5_VIP_Name }}_https_vip"
+    when: item.name == "Use-Case-4-VIP_https_vip"
     loop_control:
       label: "{{ item.name }}"
 
