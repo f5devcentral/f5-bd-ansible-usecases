@@ -19,31 +19,18 @@
       provider: "{{provider}}"
       gather_subset:
        - virtual-servers
-    register: bigip_facts   
+    register: previous_run   
 
   - debug:
-      var: bigip_facts
-
-
-  - name: Check if Command was previously run
-    ansible.builtin.uri:
-      url: "https://{{ ansible_host }}:8443/mgmt/tm/ltm/virtual"
-      method: GET
-      return_content: yes
-      force_basic_auth: true
-      user: "{{ ansible_user }}"
-      password: "{{ ansible_ssh_pass }}"
-      validate_certs: false
-    delegate_to: localhost
-    register: previous_run
+      var: previous_run
 
   - name: Check if Previous run exists
     set_fact:
-      previous_run_exists: "{{item.description}}"
+      previous_run_exists: "{{item.name}}"
     with_items: "{{ previous_run.json['items'] }}"
-    when: item.description == "Use-Case-4-VIP_https_vip"
+    when: item.name == "{{ F5_VIP_Name }}_https_vip"
     loop_control:
-      label: "{{ item.description }}"
+      label: "{{ item.name }}"
 
   - name: Create Pool with Members
     f5networks.f5_modules.bigip_pool:
