@@ -14,6 +14,17 @@
       server_port: "{{F5_Admin_Port}}"
       validate_certs: "no"
 
+  - name: Query BIG-IP facts
+    f5networks.f5_modules.bigip_device_info:
+      provider: "{{provider}}"
+      gather_subset:
+       - virtual-servers
+    register: bigip_facts   
+
+  - debug:
+      var: bigip_facts
+
+
   - name: Check if Command was previously run
     ansible.builtin.uri:
       url: "https://{{ ansible_host }}:8443/mgmt/tm/ltm/virtual"
