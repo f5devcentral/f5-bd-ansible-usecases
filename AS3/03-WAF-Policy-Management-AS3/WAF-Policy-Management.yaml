@@ -348,12 +348,12 @@
       exit 0
     when: sha_matched is defined and student_id is undefined
       
-  # - name: Git checkout 3
-  #   ansible.builtin.git:
-  #     repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}"
-  #     dest: ~/asm-xml-files-student
-  #   ignore_errors: true
-  #   when: sha_matched is defined
+  - name: Git checkout 3
+    ansible.builtin.git:
+      repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}"
+      dest: ~/asm-xml-files-student
+    ignore_errors: true 
+    when: sha_matched is defined and student_id is defined
 
   - name: Copy Modified File to Git Repo
     ansible.builtin.copy:
