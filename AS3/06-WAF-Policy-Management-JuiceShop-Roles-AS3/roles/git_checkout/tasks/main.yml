@@ -28,17 +28,7 @@
    with_items: "{{repo_info.json['values']}}"
    when: item.name == repo_name
 
- - name: Removes directory if Exists
-   ansible.builtin.file:
-     path: ~/asm-xml-files
-     state: absent
-
- - name: Removes directory if Exists
-   ansible.builtin.file:
-     path: ~/asm-xml-files-student
-     state: absent
-
- - name: Git checkout
+ - name: Git checkout 1
    ansible.builtin.git:
      repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_asm_default_repo[8:]}}"
      dest: ~/asm-xml-files
@@ -50,7 +40,7 @@
      dest: "{{ ASM_Policy_File }}"
    when: student_id is undefined
 
- - name: Git checkout
+ - name: Git checkout 2
    ansible.builtin.git:
      repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}"
      dest: ~/asm-xml-files
