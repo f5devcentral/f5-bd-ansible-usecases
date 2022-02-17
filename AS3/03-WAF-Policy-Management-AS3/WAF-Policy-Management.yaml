@@ -369,6 +369,7 @@
     ansible.builtin.shell: |
       cd /root/asm-xml-files-student/
       git remote add origin "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}.git"
+      git commit -m "ASM File Update $(date +"%Y-%m-%d %H:%M:%S")"
       git push -u origin master
       exit 0
     when: sha_matched is defined and student_id is undefined
