@@ -55,14 +55,14 @@
       git config --global user.name "{{ git_username }}"
   
   - name: Get latest DO RPM name
-    ansible.builtin.shell: wget -O - {{do_uri}} | grep -E rpm | head -1 | cut -d "/" -f 7 | cut -d "=" -f 1 |  cut -d "\"" -f 1
+    ansible.builtin.shell: curl -s {{do_uri}} | grep -E rpm | head -1 | cut -d "/" -f 7 | cut -d "=" -f 1 |  cut -d "\"" -f 1
     register: do_output
 
   - ansible.builtin.set_fact:
      do_release: "{{do_output.stdout_lines[0]}}"
 
   - name: Get latest DO RPM version
-    ansible.builtin.shell: wget -O - {{do_uri}} | grep -E rpm | head -1 | cut -d "/" -f 6
+    ansible.builtin.shell: curl -s {{do_uri}} | grep -E rpm | head -1 | cut -d "/" -f 6
     register: do_output
 
   - ansible.builtin.set_fact:
