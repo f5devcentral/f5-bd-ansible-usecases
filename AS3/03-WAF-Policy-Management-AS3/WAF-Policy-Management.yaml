@@ -351,7 +351,7 @@
   - name: Copy Modified File to Git Repo
     ansible.builtin.copy:
       src: "{{ASM_Policy_File}}"
-      dest: "~/asm-xml-files-student/{{ASM_Final_File_Name}}"
+      dest: "/root/asm-xml-files-student/{{ASM_Final_File_Name}}"
     when: sha_matched is defined
     register: file_name_output
 
@@ -360,7 +360,7 @@
 
   - name: Initial Commit Changes to Git
     ansible.builtin.shell: |
-      cd ~/asm-xml-files-student/
+      cd /root/asm-xml-files-student/
       git remote add origin "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}.git"
       git push -u origin master
       exit 0
@@ -368,7 +368,7 @@
 
   - name: Commit Changes to Git
     ansible.builtin.shell: |
-      cd ~/asm-xml-files-student/
+      cd /root/asm-xml-files-student/
       git add .
       git commit -m "ASM File Update $(date +"%Y-%m-%d %H:%M:%S")"
       git push
