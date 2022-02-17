@@ -337,7 +337,7 @@
 
   - name: Create a directory if it does not exist
     ansible.builtin.file:
-      path: ~/asm-xml-files-student
+      path: /root/asm-xml-files-student
       state: directory
       mode: '0755'
       
