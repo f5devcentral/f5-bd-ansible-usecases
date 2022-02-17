@@ -361,6 +361,7 @@
   - name: Initial Commit Changes to Git
     ansible.builtin.shell: |
       cd /root/asm-xml-files-student/
+      git init
       git remote add origin "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}.git"
       git push -u origin master
       exit 0
