@@ -340,6 +340,13 @@
       path: "/root/asm-xml-files-student"
       state: directory
       mode: '0755'
+
+  - name: Initialize Git
+    ansible.builtin.shell: |
+      cd /root/asm-xml-files-student/
+      git init
+      exit 0
+    when: sha_matched is defined and student_id is undefined
       
   # - name: Git checkout 3
   #   ansible.builtin.git:
@@ -361,7 +368,6 @@
   - name: Initial Commit Changes to Git
     ansible.builtin.shell: |
       cd /root/asm-xml-files-student/
-      git init
       git remote add origin "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}.git"
       git push -u origin master
       exit 0
