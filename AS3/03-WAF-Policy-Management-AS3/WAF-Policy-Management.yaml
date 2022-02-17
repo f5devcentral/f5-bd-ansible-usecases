@@ -337,7 +337,7 @@
 
   - name: Create a directory if it does not exist
     ansible.builtin.file:
-      path: /root/asm-xml-files-student
+      path: "~/asm-xml-files-student"
       state: directory
       mode: '0755'
       
@@ -375,21 +375,21 @@
       exit 0
     when: sha_matched is defined and student_id is defined
 
-  - name: Ensure remote URL does not contain credentials
-    community.general.git_config:
-      name: remote.origin.url
-      value: "{{git_asm_default_repo}}"
-      scope: local
-      repo: ~/asm-xml-files
-    when: sha_matched is defined
+  # - name: Ensure remote URL does not contain credentials
+  #   community.general.git_config:
+  #     name: remote.origin.url
+  #     value: "{{git_asm_default_repo}}"
+  #     scope: local
+  #     repo: ~/asm-xml-files
+  #   when: sha_matched is defined
 
-  - name: Ensure remote URL does not contain credentials
-    community.general.git_config:
-      name: remote.origin.url
-      value: "{{git_website}}{{git_workspace}}/{{repo_name}}"
-      scope: local
-      repo: ~/asm-xml-files-student
-    when: sha_matched is defined
+  # - name: Ensure remote URL does not contain credentials
+  #   community.general.git_config:
+  #     name: remote.origin.url
+  #     value: "{{git_website}}{{git_workspace}}/{{repo_name}}"
+  #     scope: local
+  #     repo: ~/asm-xml-files-student
+  #   when: sha_matched is defined
   
   - ansible.builtin.debug:
       var: ASM_Final_File_Name
