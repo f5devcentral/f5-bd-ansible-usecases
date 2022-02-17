@@ -332,7 +332,7 @@
     when: sha_matched is defined and student_id is undefined
 
   - pause:
-      seconds: 20
+      seconds: 60
     when: sha_matched is defined and student_id is undefined
       
   - name: Git checkout 3
