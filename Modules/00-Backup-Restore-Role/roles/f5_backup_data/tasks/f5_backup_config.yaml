@@ -1,10 +1,4 @@
 ---
-- name: Create local directory
-  ansible.builtin.file:
-    path: "{{local_folder_location}}"
-    state: directory
-  register: local_dir
-  delegate_to: localhost
 
 - name: Download a new UCS
   f5networks.f5_modules.bigip_ucs_fetch:
