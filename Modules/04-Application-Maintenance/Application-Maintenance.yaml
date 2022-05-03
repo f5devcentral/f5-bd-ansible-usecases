@@ -14,6 +14,24 @@
       server_port: "{{F5_Admin_Port}}"
       validate_certs: "no"
 
+  - name: Query BIG-IP facts
+    f5networks.f5_modules.bigip_device_info:
+      provider: "{{provider}}"
+      gather_subset:
+       - virtual-servers
+    register: previous_run   
+
+  # - debug:
+  #     var: previous_run
+
+  - name: Check if Previous run exists
+    set_fact:
+      previous_run_exists: "{{ item.name }}"
+    with_items: "{{ previous_run.virtual_servers }}"
+    when: item.name == "Use-Case-4-VIP_https_vip"
+    loop_control:
+      label: "{{ item.name }}"
+
   - name: Create Pool with Members
     f5networks.f5_modules.bigip_pool:
       provider: "{{provider}}"
@@ -22,6 +40,7 @@
       lb_method: round-robin
       monitors:
         - http
+    when: previous_run_exists is not defined        
 
   - name: Create a HTTPS Virtual Server
     f5networks.f5_modules.bigip_virtual_server:
@@ -38,7 +57,7 @@
        - name: clientssl
          context: client-side
        - oneconnect
-    when: F5_VIP_Name is defined
+    when: (F5_VIP_Name is defined) and (previous_run_exists is not defined)
 
   - name: Add Pool Members
     f5networks.f5_modules.bigip_pool_member:
@@ -50,13 +69,14 @@
       port: "80"
       preserve_node: "yes"
     loop: "{{ groups['web'] }}"
+    when: previous_run_exists is not defined        
 
   - name: Query BIG-IP facts
     f5networks.f5_modules.bigip_device_info:
       provider: "{{provider}}"
       gather_subset:
        - ltm-pools
-    register: bigip_facts
+    register: bigip_facts       
 
   - name: Change ALL pool members State to {{F5_Pool_Node_State}}
     f5networks.f5_modules.bigip_pool_member:

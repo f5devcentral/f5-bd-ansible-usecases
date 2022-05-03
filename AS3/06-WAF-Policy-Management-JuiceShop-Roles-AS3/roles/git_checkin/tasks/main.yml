@@ -51,44 +51,51 @@
      seconds: 20
    when: sha_matched is defined and student_id is undefined
 
- - name: Git checkout
+ - name: Create a directory if it does not exist
+   ansible.builtin.file:
+     path: "/root/asm-xml-files-student"
+     state: directory
+     mode: '0755'
+
+ - name: Initialize Git
+   ansible.builtin.shell: |
+     cd /root/asm-xml-files-student/
+     git init
+     exit 0
+   when: sha_matched is defined and student_id is undefined
+
+ - name: Git checkout 3
    ansible.builtin.git:
      repo: "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}"
-     dest: ~/asm-xml-files-student
+     dest: /root/asm-xml-files-student
    ignore_errors: true
    when: sha_matched is defined
 
  - name: Copy Modified File to Git Repo
    ansible.builtin.copy:
      src: "{{ASM_Policy_File}}"
-     dest: "~/asm-xml-files-student/{{ASM_Final_File_Name}}"
+     dest: "/root/asm-xml-files-student/{{ASM_Final_File_Name}}"
    when: sha_matched is defined
    register: file_name_output
 
  - ansible.builtin.debug: 
      var: file_name_output
 
+ - name: Initial Commit Changes to Git
+   ansible.builtin.shell: |
+     cd /root/asm-xml-files-student/
+     git remote add origin "https://{{git_username | urlencode }}:{{git_password | urlencode}}@{{git_website[8:]}}{{git_workspace}}/{{repo_name}}.git"
+     git add .
+     git commit -m "ASM File Update $(date +"%Y-%m-%d %H:%M:%S")"
+     git push -u origin master
+     exit 0
+   when: sha_matched is defined and student_id is undefined
+
  - name: Commit Changes to Git
    ansible.builtin.shell: |
-     cd ~/asm-xml-files-student/
+     cd /root/asm-xml-files-student/
      git add .
      git commit -m "ASM File Update $(date +"%Y-%m-%d %H:%M:%S")"
      git push
      exit 0
-   when: sha_matched is defined
-
- - name: Ensure remote URL does not contain credentials
-   community.general.git_config:
-     name: remote.origin.url
-     value: "{{git_asm_default_repo}}"
-     scope: local
-     repo: ~/asm-xml-files
-   when: sha_matched is defined
-
- - name: Ensure remote URL does not contain credentials
-   community.general.git_config:
-     name: remote.origin.url
-     value: "{{git_website}}{{git_workspace}}/{{repo_name}}"
-     scope: local
-     repo: ~/asm-xml-files-student
-   when: sha_matched is defined
+   when: sha_matched is defined and student_id is defined
