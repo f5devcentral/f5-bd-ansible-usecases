@@ -7,7 +7,7 @@ F5_VIP_Name: Use-Case-3-VIP
 
 
 ASM_Master_File: "~/asm-xml-files/Master_Template_v16.xml"
-ASM_Policy_File: "/tmp/Modified_Master_Template_v16.xml"
+ASM_Policy_File: "/tmp/f5/Modified_Master_Template_v16.xml"
 Blocked_URLs:
 - /blocked.html
 - /hacked.html
