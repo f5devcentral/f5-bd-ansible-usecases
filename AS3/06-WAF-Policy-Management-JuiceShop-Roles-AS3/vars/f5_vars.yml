@@ -9,6 +9,7 @@ F5_Admin_Port: "8443"
 
 ASM_Master_File: "~/asm-xml-files/Master_Template_v16.xml"
 ASM_Policy_File: "/tmp/f5/Modified_Master_Template_v16.xml"
+File_Location: "/tmp/f5/"
 Block_My_IP: "yes"
 
 #Blocked URLS Tasks Variables

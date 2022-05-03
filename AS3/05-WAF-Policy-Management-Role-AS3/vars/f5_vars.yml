@@ -9,6 +9,7 @@ F5_VIP_Name: Use-Case-5-VIP
 
 ASM_Master_File: "~/asm-xml-files/Master_Template_v16.xml"
 ASM_Policy_File: "/tmp/f5/Modified_Master_Template_v16.xml"
+File_Location: "/tmp/f5/"
 
 #Blocked URLS Tasks Variables
 Blocked_URLs:

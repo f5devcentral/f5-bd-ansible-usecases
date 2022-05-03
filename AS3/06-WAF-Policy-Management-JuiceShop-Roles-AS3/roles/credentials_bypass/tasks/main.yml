@@ -3,9 +3,9 @@
 
 #Bypass for userAuth
  - ansible.builtin.stat:
-     path: /tmp/credentials.yml
+     path: "{{ File_Location }}"/credentials.yml
    register: credentials_bypass
 
  - ansible.builtin.include_vars:
-     file: /tmp/credentials.yml
+     file: "{{ File_Location }}"/credentials.yml
    when: credentials_bypass.stat.exists
