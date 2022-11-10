@@ -54,23 +54,19 @@
       git config --global user.email "{{ git_email }}"
       git config --global user.name "{{ git_username }}"
   
-  - name: Get latest DO RPM name
-    ansible.builtin.shell: curl -s {{do_uri}} | grep -E rpm | head -1 | cut -d "/" -f 7 | cut -d "=" -f 1 |  cut -d "\"" -f 1
-    register: do_output
-
-  - ansible.builtin.set_fact:
-     do_release: "{{do_output.stdout_lines[0]}}"
-
   - name: Get latest DO RPM version
-    ansible.builtin.shell: curl -s {{do_uri}} | grep -E rpm | head -1 | cut -d "/" -f 6
+    ansible.builtin.shell: curl -s {{do_uri}} | grep -E rpm |grep -E browser_download_url | head -1 | cut -d "\"" -f 4
     register: do_output
 
+  - debug:
+     var: do_output.stdout_lines[0]
+
   - ansible.builtin.set_fact:
-     do_release_tag: "{{do_output.stdout_lines[0]}}"
+     do_download: "{{do_output.stdout_lines[0]}}"
 
   - name: Grab DO RPM from github
     ansible.builtin.get_url:
-     url: "{{do_uri}}/download/{{do_release_tag}}/{{do_release}}?raw=true"
+     url: "{{do_download}}?raw=true"
      dest: "~/"
      validate_certs: false
 
